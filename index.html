@@ -1,0 +1,1195 @@
+<title>Texas to California License Run</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --page:#eef1f5; --surface:#ffffff; --surface-2:#e5eaf1; --surface-3:#f7f9fb;
+  --ink:#0f151d; --ink-2:#48556a; --ink-3:#78859a;
+  --line:#d6dde7; --line-2:#c2ccd9;
+  --accent:#14497a; --accent-2:#2d6fb0; --accent-soft:#e2ecf6;
+  --good:#177a47; --good-soft:#e0f2e8;
+  --warn:#a86e14; --warn-soft:#fbeed6;
+  --bad:#ac3327; --bad-soft:#fbe4e1;
+  --shadow:0 1px 2px rgba(15,21,29,.06), 0 4px 14px rgba(15,21,29,.05);
+  --r:12px; --r-sm:9px;
+  --ui:"Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --prose:"Newsreader", Georgia, "Times New Roman", serif;
+  --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:#0c1016; --surface:#151b24; --surface-2:#1d2531; --surface-3:#111720;
+    --ink:#eef2f8; --ink-2:#a7b3c4; --ink-3:#76829a;
+    --line:#28313f; --line-2:#36414f;
+    --accent:#6fa8e2; --accent-2:#8dbdec; --accent-soft:#17293c;
+    --good:#4cc283; --good-soft:#14301f;
+    --warn:#dfa94c; --warn-soft:#33270f;
+    --bad:#e4756a; --bad-soft:#341a18;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#0c1016; --surface:#151b24; --surface-2:#1d2531; --surface-3:#111720;
+  --ink:#eef2f8; --ink-2:#a7b3c4; --ink-3:#76829a;
+  --line:#28313f; --line-2:#36414f;
+  --accent:#6fa8e2; --accent-2:#8dbdec; --accent-soft:#17293c;
+  --good:#4cc283; --good-soft:#14301f;
+  --warn:#dfa94c; --warn-soft:#33270f;
+  --bad:#e4756a; --bad-soft:#341a18;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:var(--ui); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:860px; margin:0 auto; padding:0 16px 96px}
+
+/* ---------- header ---------- */
+header.top{
+  position:sticky; top:0; z-index:40; background:var(--page);
+  border-bottom:1px solid var(--line);
+}
+.top-in{max-width:860px; margin:0 auto; padding:12px 16px 0}
+.brandrow{display:flex; align-items:center; gap:12px; justify-content:space-between}
+.brand{display:flex; align-items:baseline; gap:9px; min-width:0}
+.brand .shield{
+  flex:none; width:26px; height:28px; display:grid; place-items:center;
+  background:var(--accent); color:#fff; border-radius:4px 4px 12px 12px;
+  font-size:10px; font-weight:700; letter-spacing:.02em; font-family:var(--ui);
+}
+:root[data-theme="dark"] .brand .shield,
+:root:not([data-theme="light"]) .brand .shield{color:#0c1016}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .brand .shield{color:#fff}}
+.brand h1{
+  font-size:16px; font-weight:700; margin:0; letter-spacing:-.015em;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.brand .sep{color:var(--ink-3); font-size:13px; white-space:nowrap}
+.iconbtn{
+  flex:none; appearance:none; border:1px solid var(--line-2); background:var(--surface);
+  color:var(--ink-2); width:36px; height:36px; border-radius:8px; cursor:pointer;
+  font-size:15px; display:grid; place-items:center; font-family:var(--ui);
+}
+.iconbtn:hover{border-color:var(--accent); color:var(--accent)}
+
+/* person switcher */
+.people{display:flex; gap:6px; align-items:center; padding:10px 0 2px}
+.people .lab{font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3); margin-right:2px}
+.pbtn{
+  appearance:none; border:1px solid var(--line-2); background:var(--surface); color:var(--ink-2);
+  padding:5px 12px; border-radius:999px; font:inherit; font-size:13px; font-weight:500; cursor:pointer;
+  max-width:44vw; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.pbtn[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--surface); font-weight:600}
+:root[data-theme="dark"] .pbtn[aria-pressed="true"],
+:root:not([data-theme="light"]) .pbtn[aria-pressed="true"]{color:#0c1016}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .pbtn[aria-pressed="true"]{color:#fff}}
+
+/* tabs */
+nav.tabs{
+  display:flex; gap:2px; overflow-x:auto; scrollbar-width:none;
+  margin-top:8px; -webkit-overflow-scrolling:touch;
+}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{
+  appearance:none; border:0; background:none; color:var(--ink-3);
+  padding:10px 12px 11px; font:inherit; font-size:14px; font-weight:500; cursor:pointer;
+  white-space:nowrap; border-bottom:2px solid transparent; font-family:var(--ui);
+}
+.tab[aria-selected="true"]{color:var(--accent); border-bottom-color:var(--accent); font-weight:600}
+
+/* ---------- generic ---------- */
+section{padding-top:20px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:18px; box-shadow:var(--shadow)}
+.card + .card{margin-top:12px}
+h2{font-size:19px; font-weight:700; letter-spacing:-.015em; margin:0 0 6px; text-wrap:balance}
+h3{font-size:15px; font-weight:600; margin:0 0 8px; letter-spacing:-.005em}
+.lede{font-family:var(--prose); font-size:16.5px; line-height:1.6; color:var(--ink-2); margin:0 0 16px; max-width:62ch}
+.prose{font-family:var(--prose); font-size:16px; line-height:1.62; color:var(--ink-2); max-width:64ch}
+.prose strong{color:var(--ink); font-weight:600}
+.muted{color:var(--ink-3); font-size:13px}
+.eyebrow{font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-3); font-weight:600; margin:0 0 6px}
+
+.badge{
+  display:inline-block; font-size:10px; text-transform:uppercase; letter-spacing:.06em;
+  font-weight:700; padding:3px 7px; border-radius:5px; white-space:nowrap; vertical-align:1px;
+  font-family:var(--ui);
+}
+.badge.verified{color:var(--good); background:var(--good-soft)}
+.badge.single{color:var(--ink-3); background:var(--surface-2)}
+.badge.changed{color:var(--warn); background:var(--warn-soft)}
+.badge.hi{color:var(--bad); background:var(--bad-soft)}
+.badge.med{color:var(--warn); background:var(--warn-soft)}
+.badge.lo{color:var(--ink-3); background:var(--surface-2)}
+
+button.act{
+  appearance:none; border:1px solid var(--accent); background:var(--accent); color:var(--surface);
+  padding:12px 20px; border-radius:var(--r-sm); font:inherit; font-size:15px; font-weight:600;
+  cursor:pointer; min-height:46px; font-family:var(--ui);
+}
+:root[data-theme="dark"] button.act, :root:not([data-theme="light"]) button.act{color:#0c1016}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) button.act{color:#fff}}
+button.ghost{
+  appearance:none; border:1px solid var(--line-2); background:var(--surface); color:var(--ink);
+  padding:12px 18px; border-radius:var(--r-sm); font:inherit; font-size:15px; cursor:pointer;
+  min-height:46px; font-family:var(--ui);
+}
+button.act:disabled, button.ghost:disabled{opacity:.45; cursor:not-allowed}
+.btnrow{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+:focus-visible{outline:2px solid var(--accent-2); outline-offset:2px}
+
+select, input[type=text], input[type=date]{
+  width:100%; padding:11px 12px; border:1px solid var(--line-2); border-radius:var(--r-sm);
+  background:var(--surface); color:var(--ink); font:inherit; font-size:16px; font-family:var(--ui);
+  min-height:46px;
+}
+label.f{display:block; font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3); font-weight:600; margin-bottom:6px}
+
+/* ---------- plan ---------- */
+.clockgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px}
+.clock{border:1px solid var(--line); border-radius:var(--r-sm); padding:13px 14px; background:var(--surface-3)}
+.clock .n{font-size:26px; font-weight:700; letter-spacing:-.02em; line-height:1.1; font-variant-numeric:tabular-nums}
+.clock .k{font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-3); font-weight:600; margin-bottom:3px}
+.clock .d{font-size:12.5px; color:var(--ink-2); margin-top:3px}
+.clock.over .n{color:var(--bad)}
+.clock.soon .n{color:var(--warn)}
+.clock.ok .n{color:var(--good)}
+
+.step{display:flex; gap:12px; padding:14px 0; border-top:1px solid var(--line)}
+.step:first-of-type{border-top:0}
+.step .cb{
+  flex:none; width:26px; height:26px; border-radius:7px; border:1.5px solid var(--line-2);
+  background:var(--surface); cursor:pointer; display:grid; place-items:center; margin-top:1px;
+  color:transparent; font-size:15px; font-weight:700; padding:0;
+}
+.step .cb[aria-pressed="true"]{background:var(--good); border-color:var(--good); color:#fff}
+.step.done .st{color:var(--ink-3)}
+.step.done .st b{text-decoration:line-through}
+.step .st{min-width:0; flex:1}
+.step .st b{font-size:15px; font-weight:600; display:block; margin-bottom:3px; color:var(--ink)}
+.step.done .st b{color:var(--ink-3)}
+.step .st p{margin:0; font-family:var(--prose); font-size:15px; line-height:1.55; color:var(--ink-2)}
+.whotag{display:inline-block; font-size:10px; text-transform:uppercase; letter-spacing:.06em; font-weight:700;
+  padding:2px 6px; border-radius:4px; background:var(--accent-soft); color:var(--accent); margin-left:6px; vertical-align:2px}
+
+/* ---------- quiz ---------- */
+.chips{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px}
+.chip{
+  appearance:none; border:1px solid var(--line-2); background:var(--surface); color:var(--ink-2);
+  padding:7px 12px; border-radius:999px; font:inherit; font-size:13px; cursor:pointer; font-family:var(--ui);
+}
+.chip[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--surface); font-weight:600}
+:root[data-theme="dark"] .chip[aria-pressed="true"], :root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#0c1016}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .chip[aria-pressed="true"]{color:#fff}}
+.chip .ct{font-variant-numeric:tabular-nums; opacity:.65; margin-left:4px; font-size:11.5px}
+
+.qmeta{display:flex; justify-content:space-between; align-items:center; gap:10px; font-size:12.5px; color:var(--ink-3); margin-bottom:9px; font-variant-numeric:tabular-nums}
+.track{height:4px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin-bottom:18px}
+.fill{height:100%; background:var(--accent); border-radius:999px; transition:width .25s ease}
+.qtext{font-size:19px; font-weight:600; line-height:1.4; margin:0 0 16px; letter-spacing:-.01em; text-wrap:balance}
+.opts{display:grid; gap:9px}
+button.opt{
+  text-align:left; appearance:none; border:1.5px solid var(--line-2); background:var(--surface); color:var(--ink);
+  padding:14px 15px; border-radius:var(--r-sm); font:inherit; font-size:15.5px; line-height:1.45; cursor:pointer;
+  display:flex; gap:11px; align-items:flex-start; min-height:52px; font-family:var(--ui);
+  transition:border-color .12s, background .12s;
+}
+button.opt .k{
+  flex:none; width:22px; height:22px; border-radius:5px; background:var(--surface-2); color:var(--ink-3);
+  font-size:12px; font-weight:700; display:grid; place-items:center; margin-top:1px;
+}
+button.opt:hover:not(:disabled){border-color:var(--accent)}
+button.opt.correct{border-color:var(--good); background:var(--good-soft)}
+button.opt.correct .k{background:var(--good); color:#fff}
+button.opt.wrong{border-color:var(--bad); background:var(--bad-soft)}
+button.opt.wrong .k{background:var(--bad); color:#fff}
+button.opt.chosen{border-color:var(--accent); background:var(--accent-soft)}
+button.opt:disabled{cursor:default}
+
+.reveal{margin-top:16px; border-top:1px solid var(--line); padding-top:14px}
+.verdict{font-weight:700; font-size:15px; margin-bottom:8px; display:flex; align-items:center; gap:8px}
+.verdict.ok{color:var(--good)} .verdict.no{color:var(--bad)}
+.why{font-family:var(--prose); font-size:15.5px; line-height:1.6; color:var(--ink-2); margin:0 0 12px}
+.cite{
+  font-size:12px; color:var(--ink-3); border-left:2px solid var(--line-2); padding-left:10px;
+  display:flex; flex-wrap:wrap; gap:6px; align-items:center;
+}
+.cite a{color:var(--accent); text-decoration:none}
+.cite a:hover{text-decoration:underline}
+
+/* ---------- results ---------- */
+.tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:10px}
+.tile{background:var(--surface-3); border:1px solid var(--line); border-radius:var(--r-sm); padding:13px 14px}
+.tile .k{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-3); font-weight:600; margin-bottom:4px}
+.tile .v{font-size:27px; font-weight:700; letter-spacing:-.02em; line-height:1.1; font-variant-numeric:tabular-nums}
+.tile .f{font-size:12px; color:var(--ink-2); margin-top:2px}
+.bars{margin-top:6px}
+.bar{display:grid; grid-template-columns:1fr 46px; gap:8px; align-items:center; padding:7px 0}
+.bar .nm{font-size:13px; color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.bar .tr{grid-column:1/3; height:7px; background:var(--surface-2); border-radius:999px; overflow:hidden}
+.bar .fl{height:100%; border-radius:999px; transition:width .3s ease}
+.bar .vl{font-size:12.5px; color:var(--ink-3); text-align:right; font-variant-numeric:tabular-nums}
+.bar .hd{display:flex; justify-content:space-between; gap:8px; align-items:baseline; grid-column:1/3}
+
+.scoreline{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px}
+.scoreline .big{font-size:44px; font-weight:700; letter-spacing:-.03em; line-height:1; font-variant-numeric:tabular-nums}
+.pillverdict{font-size:13px; font-weight:700; padding:5px 12px; border-radius:999px; text-transform:uppercase; letter-spacing:.05em}
+.pillverdict.pass{background:var(--good-soft); color:var(--good)}
+.pillverdict.fail{background:var(--bad-soft); color:var(--bad)}
+
+.rev{border:1px solid var(--line); border-left-width:3px; border-radius:var(--r-sm); padding:13px 15px; margin-bottom:9px; background:var(--surface-3)}
+.rev.wrong{border-left-color:var(--bad)}
+.rev.right{border-left-color:var(--good)}
+.rev .rq{font-size:14.5px; font-weight:600; margin:0 0 7px; line-height:1.4}
+.rev .ra{font-size:13.5px; margin:0 0 3px; color:var(--ink-2)}
+.rev .ra .l{color:var(--ink-3); font-size:11px; text-transform:uppercase; letter-spacing:.05em; font-weight:600; margin-right:5px}
+.rev .ra.good{color:var(--good)} .rev .ra.bad{color:var(--bad)}
+
+/* ---------- tables / reference ---------- */
+.scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 -18px; padding:0 18px}
+table{width:100%; border-collapse:collapse; font-size:14px; min-width:420px}
+th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-3); font-weight:600; padding:8px 10px; border-bottom:1px solid var(--line-2); white-space:nowrap}
+td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+td .val{font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap}
+
+details{border:1px solid var(--line); border-radius:var(--r-sm); background:var(--surface); margin-bottom:9px}
+details > summary{
+  cursor:pointer; padding:14px 16px; font-weight:600; font-size:15px; list-style:none;
+  display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:50px;
+}
+details > summary::-webkit-details-marker{display:none}
+details > summary::after{content:"+"; color:var(--ink-3); font-size:19px; font-weight:400; flex:none}
+details[open] > summary::after{content:"\2212"}
+details .body{padding:0 16px 16px}
+details > summary .sumtitle{min-width:0}
+
+.contrast{border:1px solid var(--line); border-radius:var(--r-sm); padding:14px 15px; margin-bottom:10px; background:var(--surface)}
+.contrast h3{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:9px}
+.cc{display:grid; gap:9px}
+.cc .side{padding-left:11px; border-left:3px solid var(--line-2)}
+.cc .side.ca{border-left-color:var(--accent)}
+.cc .side .lb{font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; color:var(--ink-3); margin-bottom:3px}
+.cc .side.ca .lb{color:var(--accent)}
+.cc .side p{margin:0; font-family:var(--prose); font-size:15px; line-height:1.55; color:var(--ink-2)}
+
+.changeitem{border:1px solid var(--line); border-radius:var(--r-sm); padding:15px 16px; margin-bottom:10px; background:var(--surface)}
+.changeitem .when{font-size:11.5px; font-weight:600; color:var(--warn); text-transform:uppercase; letter-spacing:.05em; margin-bottom:5px}
+.changeitem h3{margin-bottom:7px}
+.changeitem p{margin:0 0 8px; font-family:var(--prose); font-size:15px; line-height:1.58; color:var(--ink-2)}
+.changeitem .whyline{border-left:3px solid var(--warn); padding-left:11px; margin-top:9px}
+.changeitem .whyline .lb{font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; color:var(--warn); margin-bottom:3px}
+
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--ink-3); margin-top:12px; align-items:center}
+.note{background:var(--warn-soft); border:1px solid color-mix(in srgb, var(--warn) 35%, transparent); border-radius:var(--r-sm); padding:12px 14px; font-size:14px; color:var(--ink-2); margin-top:12px}
+.note b{color:var(--ink)}
+.empty{color:var(--ink-3); font-size:14.5px; padding:22px 0; text-align:center; font-family:var(--prose)}
+.hide{display:none !important}
+.kbd{font-family:var(--mono); font-size:11px; background:var(--surface-2); border-radius:4px; padding:2px 5px; color:var(--ink-3)}
+.srcnote{font-size:12.5px; color:var(--ink-3); margin-top:10px}
+.srcnote a{color:var(--accent)}
+footer.foot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line); font-size:12.5px; color:var(--ink-3)}
+
+@media (max-width:520px){
+  .clockgrid{grid-template-columns:1fr}
+  .qtext{font-size:18px}
+  .scoreline .big{font-size:38px}
+  .card{padding:15px}
+  .scroll{margin:0 -15px; padding:0 15px}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important; transition:none !important}
+}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="brandrow">
+      <div class="brand">
+        <div class="shield">CA</div>
+        <h1>Texas &rarr; California</h1>
+        <span class="sep">Class C prep</span>
+      </div>
+      <button class="iconbtn" id="themeBtn" type="button" title="Switch theme" aria-label="Switch theme">&#9681;</button>
+    </div>
+    <div class="people">
+      <span class="lab">Studying</span>
+      <button class="pbtn" id="pA" type="button" aria-pressed="true"></button>
+      <button class="pbtn" id="pB" type="button" aria-pressed="false"></button>
+      <button class="iconbtn" id="renameBtn" type="button" title="Rename" aria-label="Rename drivers" style="width:32px;height:32px;font-size:13px">&#9998;</button>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true"  data-tab="plan">Plan</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="drill">Drill</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="test">Mock test</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="texas">From Texas</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="changes">What changed</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="numbers">Numbers</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="sources">Sources</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ PLAN ============ -->
+<section id="tab-plan">
+  <div class="card">
+    <p class="eyebrow">Two clocks, two different deadlines</p>
+    <h2>You have 10 days for the license and 20 for the vehicles</h2>
+    <p class="lede">California Vehicle Code &sect;12505 lets you drive on a Texas license for no more than 10 days
+      after you establish residency. Registration is a separate, longer clock. Set the date below and this
+      page will do the counting.</p>
+    <div>
+      <label class="f" for="resDate">Date residency was established</label>
+      <input type="date" id="resDate">
+    </div>
+    <div class="clockgrid" id="clocks"></div>
+    <p class="muted" style="margin-top:12px">Residency is triggered by things like registering to vote, paying
+      in-state tuition, claiming a homeowner&rsquo;s property tax exemption, or taking a job here &mdash; not
+      simply by arriving.</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+      <h2 style="margin:0">Checklist</h2>
+      <span class="muted" id="planCount"></span>
+    </div>
+    <p class="lede" style="margin:8px 0 4px">Tracked separately for each of you. Tap a box to tick it off.</p>
+    <div id="planSteps"></div>
+  </div>
+</section>
+
+<!-- ============ DRILL ============ -->
+<section id="tab-drill" class="hide">
+  <div class="card">
+    <h2>Drill by topic</h2>
+    <p class="lede">Instant feedback with the reason and the source. Pick a topic, or drill everything.
+      <span class="kbd">1</span>&ndash;<span class="kbd">4</span> to answer, <span class="kbd">Enter</span> for next.</p>
+    <div class="chips" id="catChips"></div>
+    <div class="btnrow">
+      <button class="act" id="drillStart" type="button">Start drilling</button>
+      <button class="ghost" id="drillMissed" type="button">Redrill my misses</button>
+    </div>
+  </div>
+  <div class="card hide" id="drillStage"></div>
+  <div class="card hide" id="drillStats">
+    <h3>This session</h3>
+    <div class="tiles" id="drillTiles"></div>
+  </div>
+</section>
+
+<!-- ============ MOCK TEST ============ -->
+<section id="tab-test" class="hide">
+  <div class="card" id="testIntro">
+    <p class="eyebrow">Built to the real format</p>
+    <h2>36 questions. Miss more than 6 and you fail.</h2>
+    <p class="lede">No feedback until you submit, exactly like the real thing. Questions are drawn across
+      topics in proportions weighted to the handbook. Every run is a fresh draw.</p>
+    <div class="note">
+      <b>On the day:</b> three attempts are included with your $46 application fee. No handbook, no phone,
+      no notes in the room.
+    </div>
+    <div class="btnrow" style="margin-top:16px">
+      <button class="act" id="testStart" type="button">Start mock test</button>
+    </div>
+  </div>
+  <div class="card hide" id="testStage"></div>
+  <div class="card hide" id="testResult"></div>
+  <div id="testReview"></div>
+</section>
+
+<!-- ============ FROM TEXAS ============ -->
+<section id="tab-texas" class="hide">
+  <div class="card">
+    <p class="eyebrow">Habits worth unlearning</p>
+    <h2>Where California differs from what you drive by now</h2>
+    <p class="lede">The California column is what the test asks about and what the police enforce &mdash; every
+      line is cited. The Texas column is context only; no question on the exam is about Texas law.</p>
+    <div class="legend">
+      <span><span class="badge hi">High</span> catches people out fastest</span>
+      <span><span class="badge med">Medium</span></span>
+      <span><span class="badge lo">Low</span></span>
+    </div>
+  </div>
+  <div id="contrastList"></div>
+</section>
+
+<!-- ============ WHAT CHANGED ============ -->
+<section id="tab-changes" class="hide">
+  <div class="card">
+    <p class="eyebrow">Recently changed</p>
+    <h2>Where older study guides are now wrong</h2>
+    <p class="lede">These changed recently enough that practice tests, cheat sheets and apps written even a
+      year or two ago still teach the superseded answer. This is the highest-value page here.</p>
+  </div>
+  <div id="changeList"></div>
+</section>
+
+<!-- ============ NUMBERS ============ -->
+<section id="tab-numbers" class="hide">
+  <div class="card">
+    <p class="eyebrow">Last-minute review</p>
+    <h2>Every number worth memorising</h2>
+    <p class="lede">The knowledge test leans hard on exact figures. If you only review one page in the
+      car park before you walk in, make it this one.</p>
+  </div>
+  <div id="numberList"></div>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section id="tab-sources" class="hide">
+  <div class="card">
+    <p class="eyebrow">How this was built</p>
+    <h2>Sources &amp; caveats</h2>
+    <p class="lede">Every fact-bearing item carries a confidence label and a link. Where a source was
+      unreachable, dated, or contradicted another source, that is stated rather than smoothed over.</p>
+    <div class="legend">
+      <span><span class="badge verified">Verified</span> wording taken from handbook or code text fetched during the build &mdash; cited as &ldquo;Source&rdquo;</span>
+      <span><span class="badge single">Single source</span> standard California practice, but that page did not restate it verbatim &mdash; cited as &ldquo;Related section&rdquo;</span>
+      <span><span class="badge changed">Changed</span> changed recently &mdash; older guides teach the superseded answer</span>
+    </div>
+    <div class="tiles" style="margin-top:16px" id="srcTiles"></div>
+  </div>
+  <div class="card">
+    <h3>Caveats worth reading before you rely on this</h3>
+    <div id="caveatList"></div>
+  </div>
+  <div class="card">
+    <h3>Source list</h3>
+    <div class="scroll"><table id="srcTable"></table></div>
+  </div>
+  <footer class="foot">
+    Built August 26, 2026 from the California Driver&rsquo;s Handbook, the California Vehicle Code and DMV
+    published pages. A study aid, not legal advice. Progress is stored in this browser only &mdash; it is
+    not shared between your two phones, and clearing site data resets it.
+  </footer>
+</section>
+
+</div>
+
+<script>
+"use strict";
+var BANK      = [{"id": "S01", "cat": "signs", "q": "A solid red traffic signal light means:", "opts": ["Stop. You may turn right on red after stopping, unless a NO TURN ON RED sign is posted", "Slow down and proceed if the way is clear", "Stop only if another vehicle is approaching", "Stop, and never turn under any circumstance"], "why": "Red means stop. California permits a right turn on red after a complete stop, provided no NO TURN ON RED sign is posted and you yield to pedestrians and cross traffic.", "src": "hb_laws", "conf": "verified"}, {"id": "S02", "cat": "signs", "q": "You may turn left on a red light only when:", "opts": ["You are turning from a one-way street onto another one-way street, after stopping, unless a sign prohibits it", "There is no oncoming traffic visible in either direction on the cross street", "You are in the far-left lane of any street and have come to a complete stop", "Never - a left turn against a red light is illegal in every situation"], "why": "A left turn on red is allowed only from a one-way street onto a one-way street, after a complete stop, and only where not posted otherwise.", "src": "hb_laws", "conf": "verified"}, {"id": "S03", "cat": "signs", "q": "A red arrow means:", "opts": ["Do not turn. Remain stopped until a green light or green arrow appears", "Turn after stopping and yielding", "The turn is protected", "Yield to oncoming traffic, then turn"], "why": "The handbook is explicit: do not turn at a red arrow. Remain stopped until a green signal or green arrow appears.", "src": "hb_laws", "conf": "verified"}, {"id": "S04", "cat": "signs", "q": "A flashing red traffic light means:", "opts": ["Stop. After stopping, you may go when it is safe", "Slow down and proceed with caution without stopping", "The signal is out of order - proceed at normal speed", "Stop and wait for the light to turn green"], "why": "A flashing red is treated exactly like a stop sign: stop, then proceed when it is safe.", "src": "hb_laws", "conf": "verified"}, {"id": "S05", "cat": "signs", "q": "A flashing yellow traffic light means:", "opts": ["Proceed with caution - slow down and be alert. You do not need to stop", "Stop before entering the intersection", "The light is about to turn red - stop immediately", "Yield to all traffic on your left"], "why": "A flashing yellow is a warning to proceed with caution. No stop is required.", "src": "hb_laws", "conf": "verified"}, {"id": "S06", "cat": "signs", "q": "A solid yellow traffic light means:", "opts": ["Stop, if you can do so safely; if you cannot, cautiously cross the intersection", "Speed up to clear the intersection before it turns red", "Stop under all circumstances, even if you are already in the intersection", "The light will turn green shortly"], "why": "Yellow warns that red is coming. Stop if you safely can; if you are already committed, clear the intersection carefully.", "src": "hb_laws", "conf": "verified"}, {"id": "S07", "cat": "signs", "q": "A flashing yellow arrow means:", "opts": ["You may turn, but the turn is not protected - yield to oncoming traffic first", "The turn is fully protected from oncoming traffic", "Do not turn under any circumstance", "Stop before turning, then proceed"], "why": "A flashing yellow arrow permits an unprotected turn: yield to oncoming traffic and pedestrians before going.", "src": "hb_laws", "conf": "verified"}, {"id": "S08", "cat": "signs", "q": "A green arrow displayed with a signal means:", "opts": ["Go in the direction of the arrow - the turn is protected", "Yield to oncoming traffic before turning", "Prepare to stop, the arrow is ending", "Turn only if no pedestrians are present anywhere"], "why": "A green arrow is a protected turn: opposing traffic is being held by a red light.", "src": "hb_laws", "conf": "verified"}, {"id": "S09", "cat": "signs", "q": "A solid green light means:", "opts": ["Proceed with caution - pedestrians have the right-of-way", "You have absolute right-of-way over everyone", "Speed up to clear the intersection", "Stop and check for cross traffic before proceeding"], "why": "Green means go, but with caution. Pedestrians already in the crosswalk still have the right-of-way.", "src": "hb_laws", "conf": "verified"}, {"id": "S10", "cat": "signs", "q": "An eight-sided (octagonal) sign always means:", "opts": ["Stop - make a full stop before the crosswalk or limit line", "Yield - slow and give way to cross traffic before proceeding", "Railroad crossing ahead - look and listen before crossing", "School zone ahead - reduce speed and watch for children"], "why": "The octagon is reserved for STOP. Stop before the limit line or crosswalk, not inside it.", "src": "hb_laws", "conf": "verified"}, {"id": "S11", "cat": "signs", "q": "A triangular sign pointing downward means:", "opts": ["Yield - slow down and be ready to stop to let other traffic pass", "Stop completely at all times", "Do not enter", "Merge ahead"], "why": "The downward triangle is YIELD: slow, be prepared to stop, and let other traffic pass first.", "src": "hb_laws", "conf": "verified"}, {"id": "S12", "cat": "signs", "q": "A five-sided (pentagon) sign means:", "opts": ["You are near a school - drive slowly and stop for children in the crosswalk", "A railroad crossing is ahead - prepare to stop for a train", "The road ahead is closed - follow the posted detour route", "A hospital zone is ahead - do not sound your horn"], "why": "The pentagon is the school sign. Slow down and stop for children in crosswalks.", "src": "hb_laws", "conf": "verified"}, {"id": "S13", "cat": "signs", "q": "A diamond-shaped sign means:", "opts": ["A warning about specific road conditions or hazards ahead", "A regulation you must obey by law", "A route marker", "Services such as food or fuel are ahead"], "why": "Diamonds are warning signs - they alert you to conditions ahead rather than imposing a rule.", "src": "hb_laws", "conf": "verified"}, {"id": "S14", "cat": "signs", "q": "A round (circular) sign warns of:", "opts": ["A railroad crossing ahead", "A school zone", "A one-way street", "A dead end"], "why": "The circular sign is the advance warning for a railroad crossing.", "src": "hb_laws", "conf": "single"}, {"id": "S15", "cat": "signs", "q": "A solid yellow line on your side of the center of a two-way road means:", "opts": ["You may not pass - stay in your lane", "You may pass whenever the road ahead is clear", "You may pass only at night", "The lane is reserved for turning"], "why": "A solid yellow line on your side prohibits crossing to pass. A broken yellow line on your side permits passing when it is safe.", "src": "hb_nav", "conf": "single"}, {"id": "S16", "cat": "signs", "q": "Two sets of solid double yellow lines that are two or more feet apart:", "opts": ["Act as a barrier - you may not drive on or over them, or make a U-turn across them", "May be crossed to pass slower vehicles", "May be crossed to make a left turn into a driveway", "Mark a center left-turn lane"], "why": "Two sets of double yellow lines two feet or more apart form a barrier. Crossing them, including for a U-turn, is prohibited.", "src": "hb_nav", "conf": "single"}, {"id": "S17", "cat": "signs", "q": "Broken white lines between lanes of traffic mean:", "opts": ["Traffic is moving in the same direction and you may change lanes when it is safe", "Traffic is moving in opposite directions", "You may not change lanes", "The lane ahead ends"], "why": "White lines separate lanes traveling the same direction; broken white lines may be crossed when safe.", "src": "hb_nav", "conf": "single"}, {"id": "S18", "cat": "signs", "q": "A yellow diamond sign showing two arrows pointing in opposite directions means:", "opts": ["Two-way traffic ahead - the road is no longer one-way or divided", "A four-way stop is ahead", "You may pass on either side", "The lanes are about to merge into one"], "why": "This warning tells you the roadway carries traffic in both directions ahead.", "src": "hb_laws", "conf": "single"}, {"id": "S19", "cat": "signs", "q": "You approach a light that has been green for a long time. You should:", "opts": ["Be prepared to stop, because it may change to yellow at any moment", "Speed up to get through before it changes", "Assume it will stay green and maintain speed", "Stop and wait for a fresh green"], "why": "A stale green may change at any moment. Cover the brake and be ready to stop safely.", "src": "hb_laws", "conf": "single"}, {"id": "S20", "cat": "signs", "q": "A traffic signal is completely dark because of a power failure. You must:", "opts": ["Treat the intersection as a four-way stop", "Proceed without stopping if no one is coming", "Treat it as a yield and slow down only", "Wait until the signal is repaired"], "why": "A dark signal is handled as an all-way stop: every approach stops and proceeds in turn.", "src": "hb_laws", "conf": "single"}, {"id": "S21", "cat": "signs", "q": "A white rectangular sign generally tells you:", "opts": ["A law or regulation you must obey", "A hazard is ahead", "Where services are located", "The name of an upcoming city"], "why": "White rectangular signs are regulatory - speed limits, turn restrictions, lane-use rules.", "src": "hb_laws", "conf": "single"}, {"id": "S22", "cat": "signs", "q": "At a stop sign with a limit line, you must stop:", "opts": ["Before the limit line, or before the crosswalk if there is no limit line", "With your front wheels inside the crosswalk", "Anywhere within the intersection", "Only if a vehicle or pedestrian is present"], "why": "Stop before the limit line; if there is none, before the crosswalk; if neither, before entering the intersection.", "src": "hb_laws", "conf": "verified"}, {"id": "S23", "cat": "signs", "q": "A sign reading NOT A THROUGH STREET means:", "opts": ["The street has no exit at the far end", "The street is closed for construction", "The street becomes one-way", "Only local traffic may use the street"], "why": "It warns that the road dead-ends and does not connect through.", "src": "hb_laws", "conf": "single"}, {"id": "S24", "cat": "signs", "q": "Orange-colored signs and cones indicate:", "opts": ["A construction or maintenance work zone", "A school zone", "A hospital zone", "A recreation area"], "why": "Orange is the standard color for temporary work-zone signs and devices. Fines in work zones are commonly doubled.", "src": "hb_laws", "conf": "single"}, {"id": "S25", "cat": "signs", "q": "A speed limit sign showing 65 on a California freeway means:", "opts": ["65 mph is the maximum under ideal conditions, and you must go slower when conditions require", "You must drive exactly 65 mph regardless of weather or traffic conditions", "65 mph is an advisory figure that carries no legal force of its own", "You may exceed 65 mph while overtaking a slower vehicle ahead of you"], "why": "Posted limits are maximums for ideal conditions. The Basic Speed Law still requires a safe speed for actual conditions.", "src": "hb_laws1", "conf": "verified"}, {"id": "R01", "cat": "row", "q": "At an intersection with no STOP or YIELD signs, who has the right-of-way?", "opts": ["The vehicle that arrives at the intersection first", "The larger vehicle", "The vehicle turning left", "The vehicle traveling faster"], "why": "The handbook states the vehicle that arrives first has the right-of-way at an uncontrolled intersection.", "src": "hb_laws", "conf": "verified"}, {"id": "R02", "cat": "row", "q": "Two vehicles reach an uncontrolled intersection at exactly the same time. You must:", "opts": ["Yield to the vehicle on your right", "Yield to the vehicle on your left", "Proceed first if you are going straight", "Sound your horn and proceed"], "why": "On simultaneous arrival, give the right-of-way to the vehicle on your right.", "src": "hb_laws", "conf": "verified"}, {"id": "R03", "cat": "row", "q": "At a T-intersection where your road ends, you must:", "opts": ["Yield to traffic on the through road", "Proceed because you have the right-of-way", "Yield only to vehicles turning left", "Stop only if a sign is posted"], "why": "Vehicles on the through road have the right-of-way at a T-intersection.", "src": "hb_laws", "conf": "verified"}, {"id": "R04", "cat": "row", "q": "When you are turning left at an intersection, you must:", "opts": ["Yield to oncoming traffic and to pedestrians until it is safe to complete the turn", "Proceed first because left turns clear the intersection faster", "Yield only to vehicles, not pedestrians", "Turn as soon as the light turns green"], "why": "A left-turning driver yields to oncoming traffic and to pedestrians in the crosswalk.", "src": "hb_laws", "conf": "verified"}, {"id": "R05", "cat": "row", "q": "Pedestrians in a marked or unmarked crosswalk:", "opts": ["Have the right-of-way, and you must yield to them", "Must yield to vehicles already in the intersection", "Have the right-of-way only in marked crosswalks", "Have the right-of-way only when a signal shows WALK"], "why": "The handbook states pedestrians have the right-of-way in marked or unmarked crosswalks. Every intersection has a crosswalk whether or not it is painted.", "src": "hb_laws", "conf": "verified"}, {"id": "R06", "cat": "row", "q": "A blind pedestrian using a white cane or guide dog:", "opts": ["Always has the right-of-way - let them cross before you proceed", "Must yield to vehicles already in the roadway", "Has the right-of-way only in marked crosswalks", "Should be signalled to cross by honking"], "why": "A blind pedestrian with a white cane or guide dog has an unconditional right-of-way. Do not honk - it can be disorienting.", "src": "hb_laws", "conf": "verified"}, {"id": "R07", "cat": "row", "q": "Two vehicles meet on a narrow mountain road and neither can pass. Who backs up?", "opts": ["The vehicle facing downhill, because the uphill vehicle has the right-of-way", "The vehicle facing uphill", "The larger vehicle", "The vehicle closest to a turnout, regardless of direction"], "why": "The vehicle facing uphill has the right-of-way; the downhill driver reverses, having better control backing downhill.", "src": "hb_laws", "conf": "verified"}, {"id": "R08", "cat": "row", "q": "When entering a roundabout you must:", "opts": ["Yield to all traffic already in the roundabout and enter to the right when a gap allows", "Stop completely before entering in every case", "Enter to the left and travel clockwise", "Proceed first because entering traffic has priority"], "why": "Yield to circulating traffic, then enter to the right (counter-clockwise) when there is an adequate gap.", "src": "hb_laws", "conf": "verified"}, {"id": "R09", "cat": "row", "q": "An emergency vehicle approaches with siren and flashing lights. You must:", "opts": ["Pull over to the right edge of the road and stop until it has passed", "Speed up to get out of its path", "Stop immediately wherever you are, including in an intersection", "Continue at the same speed and stay in your lane"], "why": "Yield by pulling to the right edge and stopping - but never stop in an intersection; clear it first, then pull over.", "src": "hb_laws", "conf": "single"}, {"id": "R10", "cat": "row", "q": "You are already in an intersection when an emergency vehicle approaches. You should:", "opts": ["Continue through the intersection, then pull over to the right and stop", "Stop immediately in the intersection", "Reverse out of the intersection", "Turn left to clear the path"], "why": "Never stop in an intersection. Clear it first, then pull to the right and stop.", "src": "hb_laws", "conf": "single"}, {"id": "R11", "cat": "row", "q": "A school bus ahead of you has its flashing RED lights on. You must:", "opts": ["Stop from either direction and remain stopped until the lights stop flashing", "Slow to 15 mph and pass carefully", "Pass on the left only", "Stop only if you are traveling the same direction as the bus"], "why": "Flashing red means stop from either direction until the children are safely across and the lights stop flashing.", "src": "hb_laws1", "conf": "verified"}, {"id": "R12", "cat": "row", "q": "The penalty for illegally passing a school bus with red lights flashing can be:", "opts": ["A fine of up to $1,000 and suspension of your driving privilege for one year", "A written warning only", "A $50 fine with no license consequence", "Two points and no fine"], "why": "The handbook states you may be fined up to $1,000 and your driving privilege could be suspended for one year.", "src": "hb_laws1", "conf": "verified"}, {"id": "R13", "cat": "row", "q": "A school bus is flashing AMBER (yellow) lights. This means:", "opts": ["Slow down and prepare to stop - the bus is about to stop for passengers", "You may continue past the bus at the normal posted speed limit", "You must stop immediately and remain stopped until the bus moves off", "The bus has broken down and is warning you to change lanes"], "why": "Amber lights are the warning that red lights and a required stop are imminent.", "src": "hb_laws1", "conf": "single"}, {"id": "R14", "cat": "row", "q": "When entering a road from a driveway or private road, you must:", "opts": ["Yield to all vehicles and pedestrians already on the road or sidewalk", "Proceed, because through traffic must yield to entering traffic", "Yield only to vehicles, not pedestrians", "Sound your horn and proceed"], "why": "Traffic already on the roadway, and pedestrians on the sidewalk you cross, have the right-of-way.", "src": "hb_laws", "conf": "single"}, {"id": "R15", "cat": "row", "q": "A traffic officer is directing traffic at an intersection where the signals still work. You must:", "opts": ["Obey the officer, even if their directions contradict the signal", "Obey the traffic signal instead", "Stop and wait for the officer to leave", "Choose whichever is safer in your judgment"], "why": "Directions from a peace officer override traffic signals and signs.", "src": "hb_laws", "conf": "single"}, {"id": "R16", "cat": "row", "q": "At a four-way stop you arrived after the vehicle on your left. You should:", "opts": ["Let the vehicle that arrived first go, then proceed in turn", "Go first because the vehicle on the left always yields", "Go first because you are on their right", "Wait for all other vehicles to clear regardless of arrival order"], "why": "At an all-way stop, order of arrival governs. The right-hand rule breaks ties only.", "src": "hb_laws", "conf": "single"}, {"id": "R17", "cat": "row", "q": "You may enter an intersection on a green light only if:", "opts": ["There is enough space on the far side for your vehicle to clear the intersection", "The light has just changed to green and traffic ahead is still moving", "You are turning right rather than going straight through", "No pedestrians are visible anywhere near the crossing"], "why": "Never block an intersection. If traffic ahead will leave you stranded in it, wait behind the limit line.", "src": "hb_laws", "conf": "single"}, {"id": "R18", "cat": "row", "q": "A funeral procession is passing with headlights on and escort vehicles. You should:", "opts": ["Yield, and not cut into or interrupt the procession", "Merge into the procession to keep traffic moving", "Pass on the right at normal speed", "Stop and wait even after the procession has passed"], "why": "Do not interrupt or cut through an organized funeral procession.", "src": "hb_laws", "conf": "single"}, {"id": "R19", "cat": "row", "q": "Before backing out of a parking space you should:", "opts": ["Check behind the vehicle, look over your shoulder, and back slowly", "Rely only on the backup camera", "Rely only on the rear-view mirror", "Sound the horn and back at normal speed"], "why": "Cameras and mirrors leave blind zones, especially for small children. Look over your shoulder and back slowly.", "src": "hb_safe", "conf": "single"}, {"id": "R20", "cat": "row", "q": "At an intersection with a YIELD sign, you must:", "opts": ["Slow down, and stop if necessary, to let traffic and pedestrians pass before proceeding", "Always come to a complete stop", "Proceed without slowing if the way looks clear from a distance", "Stop only if a vehicle is within 100 feet"], "why": "Yield means slow and be ready to stop; you give way to traffic and pedestrians already there.", "src": "hb_laws", "conf": "verified"}, {"id": "R21", "cat": "row", "q": "You must yield to a light-rail vehicle or streetcar because:", "opts": ["It runs on fixed tracks, cannot swerve, and needs a long distance to stop", "It is always operated by a government agency", "It carries more passengers than your vehicle", "It has no brakes"], "why": "Rail vehicles cannot steer around you and need long stopping distances. Give them the right-of-way.", "src": "hb_laws", "conf": "single"}, {"id": "R22", "cat": "row", "q": "When a pedestrian is crossing against a red light or outside a crosswalk, you should:", "opts": ["Still yield and avoid hitting them, even though they are in the wrong", "Proceed because you have the right-of-way", "Sound your horn and maintain speed", "Report them to police before proceeding"], "why": "The handbook stresses that a driver must always try to avoid hitting a pedestrian, regardless of who has the legal right-of-way.", "src": "hb_laws", "conf": "single"}, {"id": "P01", "cat": "speed", "q": "The California Basic Speed Law says:", "opts": ["You may never drive faster than is safe for current conditions, regardless of the posted limit", "You must always drive exactly the posted speed limit", "You must match the speed of surrounding traffic", "You may exceed the limit by up to 5 mph"], "why": "The Basic Speed Law is the master rule: the safe speed for conditions can be well below the posted maximum in rain, fog or heavy traffic. This is one of the most frequently tested items.", "src": "hb_laws1", "conf": "verified"}, {"id": "P02", "cat": "speed", "q": "Unless otherwise posted, the speed limit in a residential or business district is:", "opts": ["25 mph", "35 mph", "30 mph", "20 mph"], "why": "The handbook gives 25 mph for residential and business districts unless otherwise posted.", "src": "hb_laws1", "conf": "verified"}, {"id": "P03", "cat": "speed", "q": "Unless otherwise posted, the speed limit in an alley is:", "opts": ["15 mph", "25 mph", "20 mph", "10 mph"], "why": "Alleys carry a 15 mph limit.", "src": "hb_laws1", "conf": "verified"}, {"id": "P04", "cat": "speed", "q": "The speed limit at a blind intersection is:", "opts": ["15 mph", "25 mph", "20 mph", "10 mph"], "why": "A blind intersection - where you cannot see 100 feet in either direction during the last 100 feet before crossing - carries a 15 mph limit.", "src": "hb_laws1", "conf": "verified"}, {"id": "P05", "cat": "speed", "q": "You are within 100 feet of a railroad crossing and cannot see the tracks for 400 feet in both directions. Your speed limit is:", "opts": ["15 mph", "25 mph", "20 mph", "10 mph"], "why": "The classic 15 mph rule: within 100 feet of a crossing where you lack a clear 400-foot view both ways.", "src": "hb_laws1", "conf": "verified"}, {"id": "P06", "cat": "speed", "q": "The speed limit within 500 feet of a school while children are outside or crossing is:", "opts": ["25 mph, and some school zones are posted as low as 15 mph", "35 mph", "20 mph in every school zone", "15 mph in every school zone"], "why": "The handbook gives 25 mph within 500 feet of a school when children are present, and notes some zones are posted as low as 15 mph.", "src": "hb_laws1", "conf": "verified"}, {"id": "P07", "cat": "speed", "q": "On a two-lane undivided highway, the maximum speed limit unless otherwise posted is:", "opts": ["55 mph", "65 mph", "70 mph", "45 mph"], "why": "Two-lane undivided highways are limited to 55 mph unless posted otherwise - a common trap for drivers used to higher rural limits in other states.", "src": "hb_laws1", "conf": "single"}, {"id": "P08", "cat": "speed", "q": "The maximum speed limit on most California freeways is:", "opts": ["65 mph, or 70 mph where posted", "75 mph", "80 mph", "85 mph on designated routes"], "why": "California's maximum is 65 mph, with 70 mph posted on some segments. There is no 75 or 80 mph limit anywhere in the state.", "src": "hb_laws1", "conf": "single"}, {"id": "P09", "cat": "speed", "q": "A vehicle towing a trailer on a California freeway is limited to:", "opts": ["55 mph", "65 mph", "70 mph", "The same limit as all other traffic"], "why": "Vehicles towing trailers, and most large trucks, are limited to 55 mph in California even where cars may do 65 or 70.", "src": "hb_laws1", "conf": "single"}, {"id": "P10", "cat": "speed", "q": "When driving in heavy fog you should:", "opts": ["Slow down and use low-beam headlights", "Use high-beam headlights to see farther", "Maintain the posted speed limit", "Turn on only your parking lights"], "why": "High beams reflect off fog and reduce visibility. Slow down and use low beams.", "src": "hb_intro", "conf": "verified"}, {"id": "P11", "cat": "speed", "q": "Driving significantly slower than the flow of traffic is:", "opts": ["Dangerous - you should move to the right lane or use a turnout", "Always the safest choice, because lower speed reduces crash severity", "Required in the left lane, which is reserved for slower through traffic", "Legal only on freeways, where minimum speed limits are posted"], "why": "Blocking the normal flow creates hazards. Slower drivers should keep right and use turnouts where provided.", "src": "hb_laws1", "conf": "single"}, {"id": "P12", "cat": "speed", "q": "The safe following distance in good conditions is at least:", "opts": ["Three seconds behind the vehicle ahead", "One second behind the vehicle ahead", "Two car lengths at any speed", "Ten feet for every 10 mph"], "why": "Pick a fixed object; if you reach it before counting three seconds you are too close. Add seconds in poor conditions.", "src": "hb_laws1", "conf": "verified"}, {"id": "P13", "cat": "speed", "q": "You should increase your following distance beyond three seconds when:", "opts": ["It is raining, you are being tailgated, or you are following a motorcycle or large truck", "You are driving on a freeway in clear weather", "You are the only vehicle on the road", "You are driving below 35 mph"], "why": "Poor traction, restricted sight lines and vulnerable road users all call for more space.", "src": "hb_laws1", "conf": "single"}, {"id": "P14", "cat": "speed", "q": "When you exit a freeway onto a surface street, you should:", "opts": ["Check your speedometer, because you will tend to underestimate your speed", "Maintain freeway speed until the first signal", "Brake hard on the freeway before the exit ramp", "Rely on how fast the road feels"], "why": "After sustained high speed, 40 mph feels slow. Check the speedometer rather than trusting the sensation.", "src": "hb_safe2", "conf": "single"}, {"id": "P15", "cat": "speed", "q": "On a slippery road you should:", "opts": ["Reduce speed well below the posted limit and increase following distance", "Maintain the posted limit and brake harder", "Drive faster to reduce time on the road", "Use cruise control to maintain a steady speed"], "why": "Traction is reduced, so slow down and leave more room. Cruise control is a poor choice on slippery surfaces.", "src": "hb_safe", "conf": "single"}, {"id": "P16", "cat": "speed", "q": "A posted speed limit is a maximum for:", "opts": ["Ideal driving conditions - you must slow for rain, fog, traffic or road work", "All conditions, including rain and fog", "Daytime driving only", "Passenger cars only"], "why": "Posted limits assume ideal conditions. The Basic Speed Law requires a lower speed when conditions are worse.", "src": "hb_laws1", "conf": "verified"}, {"id": "P17", "cat": "speed", "q": "Excessive speed increases total stopping distance because:", "opts": ["Both reaction distance and braking distance grow, and braking distance grows faster than speed does", "Only reaction distance grows", "Only braking distance grows, in direct proportion to speed", "Stopping distance is unaffected by speed"], "why": "Reaction distance rises with speed, and braking distance rises roughly with the square of speed, so total stopping distance climbs sharply.", "src": "hb_safe2", "conf": "single"}, {"id": "P18", "cat": "speed", "q": "When approaching a curve you should:", "opts": ["Slow to a safe speed before entering the curve", "Brake hard in the middle of the curve", "Accelerate through the entire curve", "Maintain the posted freeway speed"], "why": "Reduce speed before the curve. Braking mid-curve upsets the vehicle's balance and can cause a skid.", "src": "hb_safe", "conf": "single"}, {"id": "K01", "cat": "park", "q": "A WHITE curb means:", "opts": ["Stop only long enough to pick up or drop off passengers", "No stopping, standing or parking at any time", "Park for a limited time posted on a sign", "Loading and unloading of freight only"], "why": "White is the passenger loading zone: stop only long enough to pick up or drop off passengers or mail.", "src": "hb_nav2", "conf": "verified"}, {"id": "K02", "cat": "park", "q": "A GREEN curb means:", "opts": ["Park for a limited time, shown on a sign or painted on the curb", "Park free for any length of time", "Loading zone for freight only", "Disabled parking only"], "why": "Green marks limited-time parking. The limit is posted on a sign or painted on the curb itself.", "src": "hb_nav2", "conf": "verified"}, {"id": "K03", "cat": "park", "q": "A YELLOW curb means:", "opts": ["Load or unload passengers and freight, and do not stop longer than posted", "No parking at any time", "Reserved for emergency vehicles", "Free parking for two hours"], "why": "Yellow is the loading zone for passengers and freight, limited to the posted time.", "src": "hb_nav2", "conf": "verified"}, {"id": "K04", "cat": "park", "q": "A RED curb means:", "opts": ["No stopping, standing or parking - though buses may stop in a red zone marked for buses", "Stopping is allowed for up to five minutes if you remain with the vehicle", "Loading and unloading is allowed only between posted hours of the day", "Parking is allowed on weekends and public holidays without restriction"], "why": "Red means no stopping, standing or parking. The only exception is a bus stopping in a red zone marked for buses.", "src": "hb_nav2", "conf": "verified"}, {"id": "K05", "cat": "park", "q": "A BLUE curb means:", "opts": ["Parking reserved for a disabled person with a placard or disabled plates", "Police and emergency vehicles only", "Fifteen-minute parking for anyone", "Commercial vehicle loading only"], "why": "Blue is reserved for disabled drivers or passengers displaying a valid placard or disabled license plate.", "src": "hb_nav2", "conf": "verified"}, {"id": "K06", "cat": "park", "q": "You may not park within how many feet of a fire hydrant?", "opts": ["15 feet", "10 feet", "20 feet", "25 feet"], "why": "Parking within 15 feet of a fire hydrant is prohibited.", "src": "hb_nav2", "conf": "verified"}, {"id": "K07", "cat": "park", "q": "Under California's daylighting law, you may not stop or park within how many feet of a crosswalk on the approach side?", "opts": ["20 feet", "10 feet", "15 feet", "30 feet"], "why": "AB 413 prohibits stopping, standing or parking within 20 feet of the approach side of any crosswalk, marked or unmarked - even where the curb is not painted red.", "src": "hb_nav2", "conf": "changed"}, {"id": "K08", "cat": "park", "q": "Where a crosswalk has a curb extension (bulb-out), the daylighting no-parking distance is:", "opts": ["15 feet", "20 feet", "25 feet", "10 feet"], "why": "The distance is reduced to 15 feet where a curb extension already improves visibility.", "src": "hb_nav2", "conf": "changed"}, {"id": "K09", "cat": "park", "q": "The daylighting rule applies:", "opts": ["Even where the curb has not been painted red and no sign is posted", "Only where the curb is painted red", "Only in cities with more than 100,000 people", "Only during school hours"], "why": "Red paint is not required for the prohibition to be enforceable. This is the single most common way newcomers collect a parking ticket in California.", "src": "ab413", "conf": "changed"}, {"id": "K10", "cat": "park", "q": "You may not park within how many feet of a sidewalk access ramp for disabled persons?", "opts": ["3 feet", "5 feet", "10 feet", "15 feet"], "why": "Parking within 3 feet of a disabled-access sidewalk ramp is prohibited.", "src": "hb_nav2", "conf": "verified"}, {"id": "K11", "cat": "park", "q": "When parking facing DOWNHILL next to a curb, turn your front wheels:", "opts": ["Toward the curb (to the right)", "Away from the curb (to the left)", "Straight ahead", "It does not matter if the parking brake is set"], "why": "Downhill: wheels toward the curb, so a rolling vehicle is stopped by the curb.", "src": "hb_nav2", "conf": "verified"}, {"id": "K12", "cat": "park", "q": "When parking facing UPHILL next to a curb, turn your front wheels:", "opts": ["Away from the curb, so the vehicle rolls back gently into the curb", "Toward the curb", "Straight ahead", "Toward the center of the road"], "why": "Uphill with a curb: wheels away from the curb, so if the vehicle rolls back the rear tire catches the curb.", "src": "hb_nav2", "conf": "verified"}, {"id": "K13", "cat": "park", "q": "When parking on a hill where there is NO curb, turn your front wheels:", "opts": ["Toward the side of the road, so the vehicle would roll away from traffic", "Toward the center of the road", "Straight ahead", "Only the parking brake matters"], "why": "With no curb, in either direction, point the wheels so a runaway vehicle rolls off the road rather than into traffic.", "src": "hb_nav2", "conf": "verified"}, {"id": "K14", "cat": "park", "q": "Whenever you park on a hill you must also:", "opts": ["Set the parking brake and leave the vehicle in park or in gear", "Leave the vehicle in neutral", "Leave the transmission in reverse only", "Leave the engine running"], "why": "Wheel position is a backup. The parking brake plus park (or in gear for a manual) is the primary safeguard.", "src": "hb_nav2", "conf": "verified"}, {"id": "K15", "cat": "park", "q": "It is illegal to park:", "opts": ["On a crosswalk, on a sidewalk, or in front of a fire station driveway", "Anywhere on a residential street overnight", "Within 50 feet of any intersection", "On any street with a posted speed limit above 35 mph"], "why": "The handbook lists crosswalks, sidewalks, fire station driveways and double-parking among prohibited locations.", "src": "hb_nav2", "conf": "verified"}, {"id": "K16", "cat": "park", "q": "Double parking - stopping alongside a vehicle already parked at the curb - is:", "opts": ["Illegal, even if you stay with the vehicle and leave the flashers on", "Legal for up to five minutes", "Legal if you leave your hazard lights on", "Legal for deliveries only"], "why": "Double parking is prohibited. Hazard lights do not make it legal.", "src": "hb_nav2", "conf": "verified"}, {"id": "K17", "cat": "park", "q": "When you park parallel to a curb, your wheels must be within how many inches of the curb?", "opts": ["18 inches", "12 inches", "24 inches", "6 inches"], "why": "California requires parallel parking within 18 inches of the curb.", "src": "hb_nav2", "conf": "single"}, {"id": "K18", "cat": "park", "q": "Parking in a space marked for disabled persons without a valid placard:", "opts": ["Is illegal and carries a substantial fine", "Is allowed for under five minutes", "Is allowed if no disabled driver is waiting", "Is allowed if you are picking someone up"], "why": "Misuse of a disabled space is heavily fined regardless of how briefly you park.", "src": "hb_nav2", "conf": "single"}, {"id": "K19", "cat": "park", "q": "You are parked on a public road at night outside a lighted area. You should:", "opts": ["Leave your parking lights on if required and make sure the vehicle is visible", "Leave your high beams on", "Leave the engine running", "Leave the hazard lights flashing all night"], "why": "Visibility to other drivers is the goal; note that it is illegal to drive using only parking lights.", "src": "hb_intro", "conf": "single"}, {"id": "K20", "cat": "park", "q": "Before you open your door into traffic after parallel parking, you should:", "opts": ["Check mirrors and look over your shoulder for traffic, cyclists and pedestrians", "Open the door quickly so you are exposed for less time", "Rely on the side mirror only", "Open the door and wait for others to go around"], "why": "Dooring a cyclist is a common and serious collision. Check mirrors and look back before opening.", "src": "hb_nav2", "conf": "single"}, {"id": "K21", "cat": "park", "q": "Leaving a child six years old or younger unattended in a vehicle is:", "opts": ["Illegal, unless supervised by someone 12 years of age or older", "Legal for up to 15 minutes", "Legal if the windows are down", "Legal if the vehicle is locked"], "why": "The handbook states it is illegal to leave a child six or younger unattended; supervision by someone 12 or older is required.", "src": "hb_safe1", "conf": "verified"}, {"id": "K22", "cat": "park", "q": "You may park in a bicycle lane:", "opts": ["Only where signs or markings specifically permit it", "Any time, as long as you are not blocking a driveway", "For up to 10 minutes", "Whenever no cyclists are in sight"], "why": "Bicycle lanes are travel lanes. Parking in one is prohibited unless specifically permitted by signs or markings.", "src": "hb_nav", "conf": "single"}, {"id": "L01", "cat": "lanes", "q": "You must signal before turning at least:", "opts": ["100 feet before the turn", "50 feet before the turn", "200 feet before the turn", "25 feet before the turn"], "why": "Signal at least 100 feet before you turn, in either direction.", "src": "hb_nav", "conf": "verified"}, {"id": "L02", "cat": "lanes", "q": "Before changing lanes on a freeway you should signal at least:", "opts": ["Five seconds before the lane change", "One second before", "Immediately as you move over", "Only if other vehicles are nearby"], "why": "The handbook calls for signaling at least five seconds before a freeway lane change.", "src": "hb_intro", "conf": "verified"}, {"id": "L03", "cat": "lanes", "q": "You should signal before pulling away from a curb:", "opts": ["Always, even if you do not see any other vehicles around", "Only when other vehicles are visible", "Only in a business district", "Only at night"], "why": "The handbook specifies signaling even when you see no other vehicles - cyclists and pedestrians may be present.", "src": "hb_intro", "conf": "verified"}, {"id": "L04", "cat": "lanes", "q": "When you exit a freeway, you should signal approximately:", "opts": ["Five seconds, or about 400 feet, before you exit", "100 feet before you exit", "As you enter the exit ramp", "Only if traffic is heavy"], "why": "The handbook gives five seconds, roughly 400 feet, for a freeway exit signal.", "src": "hb_nav", "conf": "verified"}, {"id": "L05", "cat": "lanes", "q": "You may drive in a center left-turn lane for a maximum of:", "opts": ["200 feet", "100 feet", "300 feet", "500 feet"], "why": "The center left-turn lane is for turning, not traveling. You may use it for at most 200 feet.", "src": "hb_nav", "conf": "verified"}, {"id": "L06", "cat": "lanes", "q": "A U-turn is never permitted:", "opts": ["At or on a railroad crossing", "In a residential district", "At any intersection with a signal", "On a two-lane road"], "why": "The handbook lists railroad crossings among the places where a U-turn is never allowed.", "src": "hb_nav", "conf": "verified"}, {"id": "L07", "cat": "lanes", "q": "You may not make a U-turn unless you can see clearly for at least:", "opts": ["200 feet in each direction", "100 feet in each direction", "300 feet in each direction", "500 feet in each direction"], "why": "A U-turn requires 200 feet of clear visibility in each direction.", "src": "hb_nav", "conf": "verified"}, {"id": "L08", "cat": "lanes", "q": "In a business district, a U-turn is permitted:", "opts": ["Only at an intersection, or through an opening in a divided highway", "Anywhere the road is wide enough", "Only between 9 a.m. and 5 p.m.", "Never, under any circumstance"], "why": "In business districts, U-turns are restricted to intersections or openings provided in a divided highway.", "src": "hb_nav", "conf": "verified"}, {"id": "L09", "cat": "lanes", "q": "You may make a U-turn in a residential district when:", "opts": ["No vehicles are approaching within 200 feet", "There is no oncoming traffic at all within one block", "You signal for 100 feet first", "Only at a signalised intersection"], "why": "In a residential district a U-turn is permitted if no vehicle is approaching within 200 feet.", "src": "hb_nav", "conf": "verified"}, {"id": "L10", "cat": "lanes", "q": "You may not make a U-turn on a divided highway by:", "opts": ["Crossing a dividing section, curb, strip of land, or two sets of double yellow lines", "Using an opening marked for authorised vehicles", "Turning at a signalised intersection", "Turning where a sign permits it"], "why": "Crossing the physical divider or the double-double yellow lines to turn around is prohibited.", "src": "hb_nav", "conf": "verified"}, {"id": "L11", "cat": "lanes", "q": "A U-turn is prohibited in front of:", "opts": ["A fire station", "A school", "A hospital", "A shopping center"], "why": "The handbook specifically prohibits U-turns in front of a fire station.", "src": "hb_nav", "conf": "verified"}, {"id": "L12", "cat": "lanes", "q": "Before changing lanes you should:", "opts": ["Signal, check mirrors, and look over your shoulder to check your blind spot", "Signal and rely on your mirrors alone", "Look over your shoulder without signaling", "Rely on the blind-spot warning light alone"], "why": "Mirrors do not cover the blind spot. A shoulder check is required, especially for motorcycles and cyclists.", "src": "hb_nav", "conf": "verified"}, {"id": "L13", "cat": "lanes", "q": "When making a right turn you should:", "opts": ["Begin in the far-right lane and stay as close as practical to the right curb", "Swing wide to the left before turning right", "Turn from whichever lane is fastest", "Turn from the center lane if traffic is heavy"], "why": "Right turns are made from the right-most lane, staying close to the curb, to prevent others passing on your right.", "src": "hb_nav", "conf": "single"}, {"id": "L14", "cat": "lanes", "q": "You may drive across a bicycle lane:", "opts": ["When turning, within 200 feet of the intersection", "At any time as long as you signal", "Only in an emergency", "Never, under any circumstance"], "why": "You may merge into a bicycle lane to turn, but only within 200 feet of the intersection, and only after yielding to cyclists.", "src": "hb_nav", "conf": "verified"}, {"id": "L15", "cat": "lanes", "q": "When passing a bicyclist and you cannot change lanes, you must allow at least:", "opts": ["Three feet", "One foot", "Two feet", "Six feet"], "why": "California's three-foot passing rule applies whenever you cannot move over a full lane. If you cannot give three feet, slow down and wait.", "src": "hb_laws1", "conf": "verified"}, {"id": "L16", "cat": "lanes", "q": "Carpool (HOV) lanes may be entered:", "opts": ["Only at designated openings in the lane markings", "Anywhere along the lane when traffic is slow", "Anywhere, as long as you signal", "Only during rush hour"], "why": "Crossing double parallel lines to enter or leave an HOV lane is illegal; use the designated broken-line openings.", "src": "hb_nav", "conf": "single"}, {"id": "L17", "cat": "lanes", "q": "On a multi-lane road, slower traffic should:", "opts": ["Keep to the right, leaving left lanes for passing and faster traffic", "Use the left lane to stay out of merging traffic", "Use the center lane at all times", "Alternate lanes to keep traffic even"], "why": "Keep right except to pass. Blocking the left lane impedes traffic and encourages unsafe passing on the right.", "src": "hb_nav", "conf": "single"}, {"id": "L18", "cat": "lanes", "q": "When merging onto a freeway you should:", "opts": ["Accelerate on the ramp to match the speed of freeway traffic before merging", "Enter slowly and speed up once in the lane", "Stop at the end of the ramp and wait for a gap", "Merge at whatever speed you are traveling"], "why": "Match traffic speed on the ramp. Entering far slower than traffic is a leading cause of merge collisions.", "src": "hb_nav", "conf": "single"}, {"id": "L19", "cat": "lanes", "q": "You are approaching a large truck that is turning right at an intersection. You should:", "opts": ["Stay back - the truck may swing left first and will need the extra room", "Pass on the right side of the truck", "Move up alongside to be visible", "Sound your horn to alert the driver"], "why": "Trucks swing wide to complete a right turn. Never move into the gap on their right.", "src": "hb_safe2", "conf": "single"}, {"id": "L20", "cat": "lanes", "q": "A solid white line between lanes of traffic means:", "opts": ["Lane changes are discouraged or prohibited", "You may change lanes freely", "Traffic flows in opposite directions", "The lane is for buses only"], "why": "A solid white line discourages or prohibits lane changes; a broken white line permits them when safe.", "src": "hb_nav", "conf": "single"}, {"id": "L21", "cat": "lanes", "q": "When you intend to turn left from a two-way street, you should position your vehicle:", "opts": ["In the left-most lane available for your direction of travel", "In the center of the roadway", "In the right lane and swing across", "In the oncoming lane before turning"], "why": "Approach a left turn from the left-most lane for your direction, and complete the turn into the lane just right of the center line.", "src": "hb_nav", "conf": "single"}, {"id": "L22", "cat": "lanes", "q": "Turning left, you should complete the turn into:", "opts": ["The lane just to the right of the center line of the street you enter", "Any lane you choose, provided you signal before changing lanes", "The far-right lane, so that following traffic can pass on your left", "The center left-turn lane, until you can merge with through traffic"], "why": "Finish the turn in the first available lane to the right of the center line, then change lanes if needed.", "src": "hb_nav", "conf": "single"}, {"id": "A01", "cat": "dui", "q": "For a driver aged 21 or over, it is illegal to drive with a blood alcohol concentration (BAC) of:", "opts": ["0.08% or higher", "0.10% or higher", "0.05% or higher", "0.04% or higher"], "why": "The adult limit in California is 0.08%. You can still be arrested below that if you are impaired.", "src": "hb_alc", "conf": "verified"}, {"id": "A02", "cat": "dui", "q": "For a driver under 21, it is illegal to drive with a BAC of:", "opts": ["0.01% or higher", "0.08% or higher", "0.05% or higher", "0.02% or higher"], "why": "California's zero-tolerance law sets the under-21 limit at 0.01% - roughly any measurable alcohol.", "src": "hb_alc", "conf": "verified"}, {"id": "A03", "cat": "dui", "q": "A driver holding a commercial driver license is illegal to drive at a BAC of:", "opts": ["0.04% or higher", "0.08% or higher", "0.01% or higher", "0.02% or higher"], "why": "Commercial drivers are held to 0.04%.", "src": "hb_alc", "conf": "verified"}, {"id": "A04", "cat": "dui", "q": "A person on DUI probation may not drive with a BAC of:", "opts": ["0.01% or higher", "0.08% or higher", "0.05% or higher", "0.04% or higher"], "why": "Anyone on DUI probation, at any age, is subject to the 0.01% limit.", "src": "hb_alc", "conf": "verified"}, {"id": "A05", "cat": "dui", "q": "A driver transporting passengers for hire is illegal to drive at a BAC of:", "opts": ["0.04% or higher", "0.08% or higher", "0.01% or higher", "0.02% or higher"], "why": "Passenger-for-hire drivers - including rideshare drivers with a passenger aboard - are held to 0.04%.", "src": "hb_alc", "conf": "verified"}, {"id": "A06", "cat": "dui", "q": "Under California's implied consent law, by driving in the state you have agreed to:", "opts": ["Submit to a breath, blood or urine test if an officer suspects you of DUI", "Allow your vehicle to be searched at any time", "Take a test only after speaking to a lawyer", "Submit to a test only if you are involved in a collision"], "why": "Driving in California constitutes consent to chemical testing when an officer suspects DUI.", "src": "hb_alc", "conf": "verified"}, {"id": "A07", "cat": "dui", "q": "If you refuse to take a chemical test when lawfully arrested for DUI, the DMV will:", "opts": ["Suspend or revoke your driving privilege for one year", "Issue a warning for a first refusal", "Take no action unless you are convicted", "Suspend your license for 30 days"], "why": "Refusal triggers a suspension or revocation of one year, separate from any criminal case.", "src": "hb_alc", "conf": "verified"}, {"id": "A08", "cat": "dui", "q": "You can be convicted of DUI:", "opts": ["Even if your BAC is below 0.08%, if your driving is impaired", "Only if your BAC is measured at 0.08% or above", "Only if you cause a collision", "Only if you refuse a chemical test"], "why": "Impairment alone is enough. A BAC reading is evidence, not a requirement.", "src": "hb_alc", "conf": "verified"}, {"id": "A09", "cat": "dui", "q": "A first DUI conviction in California can result in:", "opts": ["A DUI program, an SR 22/SR 1P filing, fees, possible jail, and possibly an ignition interlock device", "A written warning and a note on your record, with no further penalty", "A fine payable by mail, with no effect on your driving privilege", "Community service in place of any fine, jail or license action"], "why": "The handbook lists the DUI program, SR 22/SR 1P filing, reissue fees, possible jail up to six months, impoundment and a possible interlock device.", "src": "hb_alc", "conf": "verified"}, {"id": "A10", "cat": "dui", "q": "An open container of alcohol in a vehicle must be:", "opts": ["Kept in the trunk or somewhere passengers do not sit", "Kept in the glove compartment", "Held by a passenger who is not driving", "Kept on the floor behind the driver"], "why": "Opened alcohol and cannabis containers must go in the trunk or a place where passengers do not sit.", "src": "hb_alc", "conf": "verified"}, {"id": "A11", "cat": "dui", "q": "Cannabis in a vehicle must be:", "opts": ["Sealed and unopened, or stored where passengers do not sit", "Kept in the center console", "Carried only by a passenger", "Kept in a locked glove box only"], "why": "The same rule as alcohol applies: sealed and unopened, or stored out of the passenger area.", "src": "hb_alc", "conf": "verified"}, {"id": "A12", "cat": "dui", "q": "Driving under the influence of a legally prescribed medication is:", "opts": ["Illegal if the medication impairs your ability to drive safely", "Always legal because it was prescribed", "Legal if you carry the prescription", "Legal if you take the recommended dose"], "why": "A valid prescription is not a defense to impaired driving. Check the label and ask your pharmacist about driving.", "src": "hb_alc", "conf": "single"}, {"id": "A13", "cat": "dui", "q": "The only thing that reduces your blood alcohol concentration is:", "opts": ["Time", "Coffee", "A cold shower", "Exercise or fresh air"], "why": "Only the passage of time lowers BAC. Coffee makes an impaired driver alert but still impaired.", "src": "hb_alc", "conf": "single"}, {"id": "A14", "cat": "dui", "q": "Alcohol affects your driving by:", "opts": ["Slowing reaction time, impairing judgment, and reducing coordination and vision", "Improving concentration in small amounts", "Only affecting vision", "Only affecting drivers who have eaten little"], "why": "Alcohol degrades reaction time, judgment, coordination and vision - and impairs judgment before the driver notices.", "src": "hb_alc", "conf": "verified"}, {"id": "A15", "cat": "dui", "q": "Combining alcohol with another drug or medication:", "opts": ["Can multiply the impairing effect of both, beyond simply adding them", "Cancels out the effect of the alcohol", "Has no additional effect", "Is safe if the drug is over-the-counter"], "why": "Interactions are often multiplicative, which is why a small amount of alcohol plus medication can be badly impairing.", "src": "hb_alc", "conf": "single"}, {"id": "A16", "cat": "dui", "q": "If a friend has been drinking and wants to drive, the best action is:", "opts": ["Arrange another ride and keep them from driving", "Give them coffee and let them drive after an hour", "Let them drive if they seem alert", "Follow them home in your own car"], "why": "Only time restores sobriety. Arranging another ride is the only reliable answer.", "src": "hb_alc", "conf": "single"}, {"id": "A17", "cat": "dui", "q": "A DUI conviction requires filing which insurance document with the DMV?", "opts": ["An SR 22 or SR 1P certificate", "An SR 1 report", "A DL 44 form", "A REG 138 form"], "why": "SR 22 (or SR 1P) is the proof-of-insurance certificate. Do not confuse it with the SR 1 collision report.", "src": "hb_alc", "conf": "verified"}, {"id": "A18", "cat": "dui", "q": "Statewide ignition interlock device requirements for DUI offenders were extended by AB 366 through:", "opts": ["January 1, 2033", "January 1, 2027", "January 1, 2030", "They were allowed to expire"], "why": "AB 366, effective January 1, 2026, extends the statewide IID program for specified DUI offenders to January 1, 2033.", "src": "catsip26", "conf": "changed"}, {"id": "H01", "cat": "share", "q": "Motorcycles are entitled to:", "opts": ["A full lane width, and you must not share a lane alongside one", "Half a lane, so you may share the lane", "The shoulder only", "The right-hand third of a lane"], "why": "A motorcycle is entitled to the full lane. Do not drive alongside one in the same lane.", "src": "hb_safe2", "conf": "single"}, {"id": "H02", "cat": "share", "q": "You are following a motorcycle. You should:", "opts": ["Increase your following distance to at least three or four seconds", "Follow more closely because motorcycles stop more slowly", "Use the same following distance as for a car", "Move to the shoulder to give room"], "why": "Motorcycles can stop far more quickly than a car and are easily hidden. Give extra following distance.", "src": "hb_safe2", "conf": "single"}, {"id": "H03", "cat": "share", "q": "The large blind spots around a truck or bus, where the driver cannot see you, are called:", "opts": ["No-zones", "Dead zones", "Safety margins", "Clear zones"], "why": "Trucks have no-zones to the front, rear and both sides. If you cannot see the driver's mirrors, they cannot see you.", "src": "hb_safe2", "conf": "single"}, {"id": "H04", "cat": "share", "q": "When a large truck is passing you, you should:", "opts": ["Stay in your lane and slow slightly to let it complete the pass", "Speed up so the pass takes less time", "Move onto the shoulder", "Flash your high beams continuously"], "why": "Hold your lane and ease off to shorten the pass. Speeding up strands the truck alongside you.", "src": "hb_safe2", "conf": "single"}, {"id": "H05", "cat": "share", "q": "Trucks and buses need a longer stopping distance than cars, so you should:", "opts": ["Avoid cutting in front of them and leave extra room when merging ahead", "Merge closely in front to keep traffic flowing", "Brake sharply in front of them to slow them down", "Follow closely to draft behind them"], "why": "Cutting in front of a heavy vehicle removes the space it needs to stop.", "src": "hb_safe2", "conf": "single"}, {"id": "H06", "cat": "share", "q": "California's Move Over law requires you to slow down and, when safe, change lanes for:", "opts": ["Stationary emergency vehicles, tow trucks and highway maintenance vehicles displaying flashing lights", "Police vehicles only, and only when an officer is standing outside the car", "Only emergency vehicles that are moving with lights and siren active", "Only vehicles stopped on the left shoulder of a divided highway"], "why": "The law covers stationary emergency vehicles, tow trucks and Caltrans vehicles with flashing lights on the shoulder.", "src": "catsip26", "conf": "verified"}, {"id": "H07", "cat": "share", "q": "Effective January 1, 2026, AB 390 expanded the Move Over law to cover:", "opts": ["Any stationary vehicle displaying hazard lights, flares or warning devices", "Only ambulances", "Only vehicles on freeways", "Only vehicles with more than four wheels"], "why": "AB 390 broadens the duty to slow down and move over to any stationary vehicle showing hazard lights or warning devices - including an ordinary car with its flashers on.", "src": "catsip26", "conf": "changed"}, {"id": "H08", "cat": "share", "q": "When you see a pedestrian with a guide dog or white cane at a corner, you should:", "opts": ["Stop and wait until they have crossed, without honking", "Honk to let them know it is safe", "Drive around them slowly", "Wave them across"], "why": "Honking or shouting can disorient a blind pedestrian. Stop, stay quiet, and let them cross.", "src": "hb_laws", "conf": "verified"}, {"id": "H09", "cat": "share", "q": "Bicyclists on a California roadway:", "opts": ["Have the same rights and responsibilities as drivers and may use a full traffic lane where needed", "Must always ride on the sidewalk", "Must always ride in a bike lane if one exists", "Have no legal right to use the roadway"], "why": "Cyclists are legitimate roadway users with the same rights and duties as drivers.", "src": "hb_nav", "conf": "single"}, {"id": "H10", "cat": "share", "q": "When you are about to make a right turn and a cyclist is riding beside you on the right:", "opts": ["Yield to the cyclist and complete the turn behind them", "Turn quickly in front of them", "Sound your horn and turn", "Speed up to pass them first"], "why": "The right hook is a common and severe collision. Yield and let the cyclist clear before you turn.", "src": "hb_nav", "conf": "single"}, {"id": "H11", "cat": "share", "q": "You are approaching a stopped emergency vehicle with flashing lights on the shoulder, and you cannot safely change lanes. You must:", "opts": ["Slow to a reasonable and prudent speed as you pass", "Maintain the posted speed limit", "Stop completely before passing", "Sound your horn as you pass"], "why": "If moving over is not safe, the requirement is to slow down significantly while passing.", "src": "catsip26", "conf": "verified"}, {"id": "H12", "cat": "share", "q": "Children playing near the roadway should be treated as:", "opts": ["Unpredictable - slow down and be prepared to stop", "Aware of traffic rules", "The responsibility of their parents only", "A hazard only in school zones"], "why": "Children may dart into the street without warning. Reduce speed and cover the brake.", "src": "hb_safe", "conf": "single"}, {"id": "H13", "cat": "share", "q": "You are driving near a light-rail train and want to turn across the tracks. You should:", "opts": ["Look both ways, yield to the train, and cross only when the way is clearly safe", "Cross quickly ahead of the train", "Assume the train will stop for you", "Follow the vehicle in front without checking"], "why": "Trains cannot stop quickly or swerve. Yield and cross only when the tracks are clearly free.", "src": "hb_laws", "conf": "single"}, {"id": "H14", "cat": "share", "q": "A pedestrian steps into an unmarked crosswalk at an intersection with no signals. You must:", "opts": ["Yield to the pedestrian - unmarked crosswalks carry the same right-of-way as marked ones", "Proceed, since only marked crosswalks count", "Sound your horn to warn them", "Yield only if they are already halfway across"], "why": "Every intersection contains a crosswalk whether painted or not, and pedestrians have the right-of-way in it.", "src": "hb_laws", "conf": "verified"}, {"id": "H15", "cat": "share", "q": "When passing a horse and rider on a rural road you should:", "opts": ["Slow down, give a wide berth, and avoid sudden noise", "Sound your horn to alert the rider", "Pass at normal speed", "Rev the engine so the horse notices you"], "why": "Horses spook easily. Slow, allow room, and avoid horns or sudden noise.", "src": "hb_safe", "conf": "single"}, {"id": "H16", "cat": "share", "q": "Motorcyclists often adjust their position within a lane in order to:", "opts": ["Be seen and to avoid road hazards and other vehicles' blind spots", "Show they are about to turn", "Signal that you may share the lane", "Indicate they are about to stop"], "why": "Lane positioning is a visibility and hazard-avoidance tactic, not a signal to other drivers.", "src": "hb_safe2", "conf": "single"}, {"id": "H17", "cat": "share", "q": "A large truck's stopping distance compared with a car's is:", "opts": ["Considerably longer, especially when loaded or on wet roads", "About the same", "Shorter, because of air brakes", "Shorter when the truck is loaded"], "why": "Weight and braking systems mean loaded trucks need far more distance to stop.", "src": "hb_safe2", "conf": "single"}, {"id": "H18", "cat": "share", "q": "The safest place to be relative to a large truck is:", "opts": ["Where you can see the driver's face in their side mirror", "Directly behind the trailer", "Alongside the trailer's rear wheels", "Immediately in front of the cab"], "why": "If you cannot see the driver in their mirror, you are in a no-zone and the driver cannot see you.", "src": "hb_safe2", "conf": "single"}, {"id": "N01", "cat": "lic", "q": "A new California resident must apply for a California driver license within:", "opts": ["10 days", "30 days", "60 days", "90 days"], "why": "California Vehicle Code section 12505 allows an out-of-state license holder to drive for not more than 10 days from the date residency is established.", "src": "cvc12505", "conf": "verified"}, {"id": "N02", "cat": "lic", "q": "A new resident must register an out-of-state vehicle in California within:", "opts": ["20 days", "10 days", "30 days", "60 days"], "why": "The handbook states you have 20 days to register your vehicle after becoming a resident or taking a job in California. Note this differs from the 10-day license deadline.", "src": "hb_reg", "conf": "verified"}, {"id": "N03", "cat": "lic", "q": "When you sell a vehicle, you must notify the DMV within:", "opts": ["5 days", "10 days", "20 days", "30 days"], "why": "Five days to file the release of liability. This protects you from liability for what the buyer does.", "src": "hb_reg", "conf": "verified"}, {"id": "N04", "cat": "lic", "q": "When you buy a vehicle, you must transfer ownership into your name within:", "opts": ["10 days", "5 days", "20 days", "30 days"], "why": "Ten days to transfer title when you buy. Contrast with five days to report a sale.", "src": "hb_reg", "conf": "verified"}, {"id": "N05", "cat": "lic", "q": "California's minimum liability insurance requirement is:", "opts": ["$30,000 / $60,000 / $15,000", "$15,000 / $30,000 / $5,000", "$25,000 / $50,000 / $25,000", "$30,000 / $60,000 / $25,000"], "why": "California raised its minimums to 30/60/15 effective January 1, 2025 under SB 1107. Older study guides and practice tests still show the former 15/30/5 figures - those answers are now wrong.", "src": "hb_fin", "conf": "changed"}, {"id": "N06", "cat": "lic", "q": "You must file a Report of Traffic Accident (SR 1) with the DMV within 10 days if a collision caused:", "opts": ["More than $1,000 in property damage, or any injury or death", "More than $500 in property damage", "Any damage at all", "More than $5,000 in property damage"], "why": "The SR 1 threshold is over $1,000 in damage, or any injury or death, and it is due within 10 days regardless of fault.", "src": "hb_fin", "conf": "verified"}, {"id": "N07", "cat": "lic", "q": "You must report a collision to law enforcement within 24 hours if:", "opts": ["Anyone was injured or killed", "There was any damage at all", "Damage exceeded $500", "The other driver was uninsured"], "why": "Injury or death triggers a 24-hour reporting duty to law enforcement, in addition to the 10-day SR 1 to the DMV.", "src": "hb_fin", "conf": "verified"}, {"id": "N08", "cat": "lic", "q": "If you are in a collision without proper insurance, your driving privilege may be suspended for:", "opts": ["Up to four years", "30 days", "Six months", "One year"], "why": "The handbook states the suspension can run up to four years, with possible reinstatement in the final three years by filing an SR 22/SR 1P.", "src": "hb_fin", "conf": "verified"}, {"id": "N09", "cat": "lic", "q": "A new resident transferring a valid out-of-state driver license to California must:", "opts": ["Pass the written knowledge test and a vision exam, but the drive test is normally waived", "Take both the knowledge test and a behind-the-wheel drive test", "Take neither test - the license simply transfers", "Take a drive test only"], "why": "The DMV states drive tests are normally waived for holders of a valid US state license, but the knowledge test is still required. The DMV may still require a drive test at its discretion.", "src": "dmv_dl", "conf": "verified"}, {"id": "N10", "cat": "lic", "q": "How many attempts do you get to pass the knowledge test before you must reapply?", "opts": ["Three", "Two", "Five", "Unlimited"], "why": "The handbook states you are allowed three attempts to pass before you must reapply and pay a new application fee.", "src": "hb_test", "conf": "verified"}, {"id": "N11", "cat": "lic", "q": "The application fee for an original or renewal Class C California driver license is:", "opts": ["$46", "$39", "$35", "$60"], "why": "The DMV fee schedule lists $46 for an original or renewal Class C license. That fee covers your three knowledge-test attempts.", "src": "dmv_fees", "conf": "verified"}, {"id": "N12", "cat": "lic", "q": "To be issued a REAL ID you must present:", "opts": ["One identity document plus two different proofs of California residency", "One identity document only", "Two identity documents and one proof of residency", "A passport only"], "why": "One proof of identity, your Social Security number, and TWO different documents proving California residency showing the name and address that will appear on the card.", "src": "dmv_realid_ck", "conf": "verified"}, {"id": "N13", "cat": "lic", "q": "A REAL ID driver license is required in order to:", "opts": ["Board a domestic flight or enter most federal facilities and military bases", "Drive on a California freeway or any other controlled-access highway", "Register a vehicle or renew registration at a California DMV office", "Obtain vehicle insurance from a carrier licensed in California"], "why": "REAL ID is a federal identification standard. A federal non-compliant license still lets you drive, but not board a domestic flight.", "src": "hb_dl", "conf": "verified"}, {"id": "N14", "cat": "lic", "q": "An adult driver's license may be suspended if their record shows:", "opts": ["4 points in 12 months, 6 points in 24 months, or 8 points in 36 months", "2 points in 12 months, 4 points in 24 months, or 6 points in 36 months", "6 points in 12 months, 9 points in 24 months, or 12 points in 36 months", "Any single moving violation carrying two or more points"], "why": "These are the negligent-operator thresholds. Memorise the pattern 4/12, 6/24, 8/36.", "src": "hb_laws2", "conf": "verified"}, {"id": "N15", "cat": "lic", "q": "Traffic convictions and collisions generally remain on your driving record for:", "opts": ["36 months or longer, depending on the type of conviction", "12 months", "6 months", "Permanently, in every case"], "why": "The handbook states 36 months or longer, depending on the conviction type. Serious offenses stay far longer.", "src": "hb_laws2", "conf": "verified"}, {"id": "N16", "cat": "lic", "q": "You must carry evidence of financial responsibility (insurance) in your vehicle:", "opts": ["At all times, and show it when requested by a peace officer or after a collision", "Only when driving outside your home county", "Only for vehicles less than 10 years old", "Only when towing a trailer"], "why": "Proof of insurance must be in the vehicle and produced on request or after a collision.", "src": "hb_fin", "conf": "single"}, {"id": "N17", "cat": "lic", "q": "Letting an unlicensed person drive your vehicle can result in:", "opts": ["The vehicle being impounded for 30 days", "A warning only", "A fine paid by the driver alone", "No consequence for the owner"], "why": "The handbook notes a 30-day impoundment when an unlicensed driver operates your vehicle.", "src": "hb_laws2", "conf": "verified"}, {"id": "N18", "cat": "lic", "q": "Fleeing or attempting to evade a peace officer is, at minimum:", "opts": ["A misdemeanour punishable by up to one year in county jail", "An infraction with a fine", "A civil penalty only", "A two-point violation with no jail"], "why": "Evading is a misdemeanour carrying up to a year in county jail, and far more if injury results.", "src": "hb_laws2", "conf": "verified"}, {"id": "N19", "cat": "lic", "q": "The DMV will revoke your driving privilege for:", "opts": ["Hit-and-run, or reckless driving that resulted in injury", "A single speeding ticket", "Two parking tickets", "Failing to signal a turn"], "why": "Revocation - not merely suspension - follows hit-and-run or injury-causing reckless driving.", "src": "hb_laws2", "conf": "verified"}, {"id": "N20", "cat": "lic", "q": "Manufacturing a product designed to obscure a license plate became punishable in 2026 by:", "opts": ["A $1,000 fine", "A written warning", "A $100 fine", "License suspension only"], "why": "AB 1085, effective January 1, 2026, makes manufacturing plate-obscuring devices an infraction carrying a $1,000 fine.", "src": "catsip26", "conf": "changed"}, {"id": "N21", "cat": "lic", "q": "A California Class C driver license generally allows you to drive:", "opts": ["A two-axle passenger vehicle, and a housecar or vehicle towing a trailer within specified weight limits", "Any vehicle including commercial tractor-trailers", "Motorcycles as well as cars", "School buses carrying passengers"], "why": "Class C is the standard non-commercial license. Motorcycles need an M1 or M2; large commercial vehicles need a Class A or B.", "src": "hb_dl", "conf": "single"}, {"id": "N22", "cat": "lic", "q": "You must notify the DMV of a change of address within:", "opts": ["10 days", "30 days", "60 days", "5 days"], "why": "Handbook \u00a74 states plainly: if you move, you must notify DMV of your new address within ten days.", "src": "hb_change", "conf": "verified"}, {"id": "D01", "cat": "safe", "q": "You must turn on your headlights:", "opts": ["From 30 minutes after sunset until 30 minutes before sunrise", "From sunset until sunrise exactly", "From one hour after sunset until one hour before sunrise", "Only when you cannot see at all"], "why": "The rule is 30 minutes after sunset to 30 minutes before sunrise - and any time you cannot see 1,000 feet ahead.", "src": "hb_intro", "conf": "verified"}, {"id": "D02", "cat": "safe", "q": "You must also use headlights when:", "opts": ["Conditions require your windshield wipers because of fog, rain or snow", "Only when it is fully dark", "Only on freeways", "Only when other vehicles have theirs on"], "why": "Wipers on means low-beam headlights on. This is a California requirement many out-of-state drivers do not have.", "src": "hb_intro", "conf": "changed"}, {"id": "D03", "cat": "safe", "q": "You must dim your high beams to low beams when you are within how many feet of an oncoming vehicle?", "opts": ["500 feet", "300 feet", "200 feet", "1,000 feet"], "why": "500 feet for oncoming traffic, 300 feet when following. Remember: the bigger number is for the vehicle coming at you.", "src": "hb_intro", "conf": "verified"}, {"id": "D04", "cat": "safe", "q": "You must dim your high beams when following another vehicle within:", "opts": ["300 feet", "500 feet", "100 feet", "1,000 feet"], "why": "300 feet when following. High beams in a leading driver's mirrors are just as blinding as head-on.", "src": "hb_intro", "conf": "verified"}, {"id": "D05", "cat": "safe", "q": "Driving with only your parking lights on is:", "opts": ["Illegal", "Legal at dusk", "Legal in a residential area", "Legal when it is raining"], "why": "The handbook states plainly that it is illegal to drive using only parking lights.", "src": "hb_intro", "conf": "verified"}, {"id": "D06", "cat": "safe", "q": "You must use headlights when it is too dark to see a person or vehicle at a distance of:", "opts": ["1,000 feet", "500 feet", "300 feet", "200 feet"], "why": "1,000 feet is the visibility threshold that triggers the headlight requirement.", "src": "hb_intro", "conf": "verified"}, {"id": "D07", "cat": "safe", "q": "You should use your horn:", "opts": ["To avoid collisions, and on narrow mountain roads where you cannot see at least 200 feet ahead", "To express displeasure with another driver", "To greet pedestrians you know", "To alert a blind pedestrian that it is safe to cross"], "why": "The horn is a collision-avoidance device. The 200-foot mountain-road rule is a specific handbook item.", "src": "hb_intro", "conf": "verified"}, {"id": "D08", "cat": "safe", "q": "If your vehicle breaks down on the highway, you should:", "opts": ["Pull as far off the road as possible and turn on your emergency flashers", "Stop in the traffic lane and turn on your headlights", "Stand behind the vehicle to direct traffic", "Leave the vehicle unlit and walk for help"], "why": "Get fully off the roadway and make the vehicle conspicuous with the flashers.", "src": "hb_safe2", "conf": "verified"}, {"id": "D09", "cat": "safe", "q": "To warn drivers behind you of a hazard ahead you can:", "opts": ["Lightly tap your brake pedal three or four times", "Turn on your high beams", "Sound your horn continuously", "Slam on your brakes"], "why": "Tapping the brake flashes the lights without abrupt deceleration.", "src": "hb_intro", "conf": "verified"}, {"id": "D10", "cat": "safe", "q": "If your vehicle starts to skid, you should:", "opts": ["Ease off the accelerator and steer in the direction you want the vehicle to go", "Brake hard and hold the wheel straight", "Accelerate to regain traction", "Turn the wheel sharply the opposite way"], "why": "Get off the throttle and steer where you want to go. Hard braking usually extends a skid.", "src": "hb_safe", "conf": "verified"}, {"id": "D11", "cat": "safe", "q": "Hydroplaning happens when:", "opts": ["Your tires ride on a film of water and lose contact with the road", "Your brakes overheat on a long descent", "Your engine loses power in deep water", "Your windshield fogs over in the rain"], "why": "At speed on wet roads the tires can lift onto a water film. Slow down; do not brake hard or steer sharply.", "src": "hb_safe", "conf": "verified"}, {"id": "D12", "cat": "safe", "q": "If your tire blows out while driving, you should:", "opts": ["Hold the steering wheel firmly, ease off the accelerator, and slow gradually", "Brake hard immediately to bring the vehicle to the quickest possible stop", "Steer sharply onto the shoulder to get clear of the traffic lane at once", "Accelerate briefly to pull the vehicle straight and maintain control"], "why": "Grip the wheel, come off the throttle, and let the vehicle slow. Hard braking during a blowout can cause a spin.", "src": "hb_safe2", "conf": "verified"}, {"id": "D13", "cat": "safe", "q": "If your brakes fail, you should:", "opts": ["Pump the brake pedal, then apply the parking brake gradually and downshift", "Turn off the ignition immediately", "Steer into oncoming traffic to slow down", "Shift into neutral and coast until you stop"], "why": "Pump to rebuild pressure, use the parking brake progressively, and downshift for engine braking.", "src": "hb_safe2", "conf": "single"}, {"id": "D14", "cat": "safe", "q": "If your vehicle's right wheels drift onto the unpaved shoulder, you should:", "opts": ["Ease off the accelerator, hold the wheel straight, and steer back gently when it is safe", "Brake hard and steer back sharply", "Accelerate and steer back immediately", "Steer back at once regardless of speed"], "why": "A sharp correction at speed is what turns a shoulder drop-off into a rollover. Slow first, then ease back on.", "src": "hb_safe2", "conf": "single"}, {"id": "D15", "cat": "safe", "q": "The best way to reduce fatigue on a long trip is:", "opts": ["Stop and rest, or share the driving", "Drink coffee and keep going", "Open the window and turn up the radio", "Drive faster to shorten the trip"], "why": "Only rest addresses fatigue. Caffeine and cold air postpone the symptoms without restoring alertness.", "src": "hb_safe2", "conf": "single"}, {"id": "D16", "cat": "safe", "q": "When driving at night you should:", "opts": ["Reduce speed and increase following distance because you can see less far", "Maintain your normal daytime speed", "Use high beams at all times", "Follow closely to use the vehicle ahead as a guide"], "why": "Your headlights limit how far you can see, so your safe speed must let you stop within that distance.", "src": "hb_safe", "conf": "single"}, {"id": "D17", "cat": "safe", "q": "Scanning while driving means:", "opts": ["Keeping your eyes moving and checking mirrors, the road ahead and the sides regularly", "Staring at the center of the road ahead", "Watching only the vehicle directly in front", "Checking mirrors only when changing lanes"], "why": "Keep your eyes moving. Fixating on one point causes drivers to miss developing hazards.", "src": "hb_safe", "conf": "verified"}, {"id": "D18", "cat": "safe", "q": "Carbon monoxide poisoning while driving can occur if:", "opts": ["The exhaust system leaks or you idle in an enclosed space", "The air conditioning is on recirculate", "The windows are open at freeway speed", "The fuel tank is nearly empty"], "why": "A leaking exhaust or idling in a closed garage lets colorless, odourless CO into the cabin.", "src": "hb_safe2", "conf": "single"}, {"id": "D19", "cat": "safe", "q": "The three-second rule should be measured:", "opts": ["From the moment the vehicle ahead passes a fixed object until you pass it", "By counting car lengths", "By your speedometer reading", "From the moment you brake until you stop"], "why": "Pick a sign or pole. If you pass it before you count three seconds, drop back.", "src": "hb_laws1", "conf": "verified"}, {"id": "D20", "cat": "safe", "q": "Before entering an intersection on a green light, the safest habit is:", "opts": ["Look left, then right, then left again before proceeding", "Proceed immediately on green", "Look only in the direction you are turning", "Rely on other drivers to obey their signals"], "why": "Red-light runners are a leading cause of intersection collisions. A quick left-right-left scan catches them.", "src": "hb_safe", "conf": "single"}, {"id": "B01", "cat": "pass", "q": "A child must ride in a REAR-FACING child restraint if they are:", "opts": ["Under 2 years old, unless they are 40 pounds or more or 3 feet 4 inches or taller", "Under 1 year old regardless of size", "Under 4 years old in all cases", "Under 20 pounds regardless of age"], "why": "Rear-facing until age 2, with an exception for a child who already weighs 40 pounds or more or stands 3 feet 4 inches or taller.", "src": "hb_safe1", "conf": "verified"}, {"id": "B02", "cat": "pass", "q": "A child must be secured in a child passenger restraint in the REAR seat if they are:", "opts": ["Under 8 years old, or less than 4 feet 9 inches tall", "Under 6 years old only", "Under 5 years old or under 40 pounds", "Under 10 years old in all cases"], "why": "Under 8 years old OR under 4 feet 9 inches means a child restraint in the back seat, subject to listed exceptions.", "src": "hb_safe1", "conf": "verified"}, {"id": "B03", "cat": "pass", "q": "A child may use an ordinary seat belt once they are:", "opts": ["8 years old or older, or at least 4 feet 9 inches tall", "6 years old or older", "5 years old and 60 pounds", "12 years old"], "why": "Age 8 or 4 feet 9 inches - whichever comes first - allows a properly secured adult seat belt.", "src": "hb_safe1", "conf": "verified"}, {"id": "B04", "cat": "pass", "q": "A rear-facing child restraint must never be placed:", "opts": ["In the front seat of a vehicle with an active passenger airbag", "In the center of the back seat", "Behind the driver", "In any vehicle built before 2010"], "why": "A deploying airbag strikes a rear-facing seat with lethal force. Rear-facing goes in the back.", "src": "hb_safe1", "conf": "verified"}, {"id": "B05", "cat": "pass", "q": "Who is responsible if a passenger under 16 is not wearing a seat belt?", "opts": ["The driver", "The passenger", "The vehicle owner", "The parent, even if not present"], "why": "The driver is cited when a passenger under 16 is unrestrained.", "src": "hb_safe1", "conf": "verified"}, {"id": "B06", "cat": "pass", "q": "Seat belt requirements in California apply to:", "opts": ["The driver and all passengers", "Front-seat occupants only", "The driver only", "Passengers under 18 only"], "why": "The handbook states you and your passengers must wear seat belts, and you can be ticketed if you do not.", "src": "hb_safe1", "conf": "verified"}, {"id": "B07", "cat": "pass", "q": "A child under 8 may legally ride in the front seat when:", "opts": ["There is no rear seat, the rear seats are side-facing jump seats, or all rear seats are occupied by children 7 or younger", "The child asks to sit in front and a parent or guardian agrees to it", "The trip is under 10 minutes and stays on residential streets", "The child is wearing a properly fastened adult lap and shoulder belt"], "why": "The handbook lists narrow exceptions, including no rear seat, side-facing or rear-facing rear seats, a restraint that cannot be installed properly, or all rear seats already occupied by children 7 or younger.", "src": "hb_safe1", "conf": "verified"}, {"id": "B08", "cat": "pass", "q": "Leaving a child or an animal alone in a hot parked vehicle is:", "opts": ["Dangerous and illegal", "Acceptable if the windows are cracked open", "Acceptable for under 20 minutes", "Acceptable in shaded parking"], "why": "Interior temperatures rise fast enough to be lethal within minutes. It is both dangerous and illegal.", "src": "hb_safe1", "conf": "verified"}, {"id": "B09", "cat": "pass", "q": "The safest place for children aged 12 and under is:", "opts": ["Properly restrained in the back seat", "In the front passenger seat", "Wherever they are most comfortable", "In the center front seat"], "why": "The back seat keeps children away from front airbags and the primary crash zone.", "src": "hb_safe1", "conf": "single"}, {"id": "B10", "cat": "pass", "q": "A lap belt should be worn:", "opts": ["Low and snug across the hips, not across the stomach", "Across the stomach", "Loosely so it does not restrict movement", "Under the arm"], "why": "The belt must load the pelvis, not the abdomen, or it can cause serious internal injuries in a crash.", "src": "hb_safe1", "conf": "single"}, {"id": "B11", "cat": "pass", "q": "Airbags are designed to work:", "opts": ["Together with seat belts, not instead of them", "Instead of seat belts", "Only for the driver", "Only in side impacts"], "why": "An airbag is a supplemental restraint. Unbelted occupants can be seriously injured by the airbag itself.", "src": "hb_safe1", "conf": "single"}, {"id": "C01", "cat": "phone", "q": "In California, using a handheld cell phone while driving is:", "opts": ["Illegal for all drivers - the phone must be hands-free and mounted", "Legal for phone calls but not for texting", "Legal except in school zones", "Legal for drivers over 18 making calls"], "why": "California bans handheld use outright. Talking on a handheld phone is not permitted even for adults - a key difference from Texas, where handheld calls are legal statewide outside school zones.", "src": "hb_safe2", "conf": "changed"}, {"id": "C02", "cat": "phone", "q": "A driver under 18 may use a cell phone while driving:", "opts": ["Not at all - even hands-free use is prohibited, except for emergencies", "Hands-free only, using a device mounted where it does not block the view", "For voice calls but not for text messages of any kind", "For navigation only, provided the route is set before driving"], "why": "Drivers under 18 may not use a phone at all while driving, hands-free included, except to call for emergency help.", "src": "hb_safe2", "conf": "verified"}, {"id": "C03", "cat": "phone", "q": "A phone mounted on the windshield may legally be:", "opts": ["Operated with a single tap or swipe, and mounted so it does not obstruct your view", "Held in your hand while stopped at a red light", "Used freely for texting while driving", "Placed anywhere on the windshield"], "why": "The law allows a single tap or swipe on a mounted device. Holding the phone remains illegal even while stopped in traffic.", "src": "hb_safe2", "conf": "single"}, {"id": "C04", "cat": "phone", "q": "Texting while driving in California is:", "opts": ["Illegal for all drivers", "Legal at red lights", "Legal for drivers over 21", "Legal if using voice-to-text only in a handheld phone"], "why": "Texting is prohibited for all drivers. Voice-to-text is permitted only through a hands-free, mounted setup.", "src": "hb_safe2", "conf": "verified"}, {"id": "C05", "cat": "phone", "q": "The most dangerous kind of distraction while driving is one that:", "opts": ["Takes your eyes off the road, your hands off the wheel, and your mind off driving at the same time", "Involves only listening, such as a podcast or a hands-free conversation", "Lasts less than two seconds, such as a quick glance at the dashboard", "Happens at low speed on a familiar residential street near home"], "why": "Texting is the worst case because it combines visual, manual and cognitive distraction.", "src": "hb_safe2", "conf": "single"}, {"id": "C06", "cat": "phone", "q": "Eating, grooming or reaching for objects while driving:", "opts": ["Are distractions that can contribute to a collision and support a citation", "Are always legal and safe", "Are legal only on freeways", "Are legal if the vehicle has cruise control"], "why": "These take attention from the driving task and can support a distracted or unsafe-driving citation.", "src": "hb_safe2", "conf": "single"}, {"id": "C07", "cat": "phone", "q": "Programming a navigation app while driving is:", "opts": ["Prohibited - set the destination before you start driving", "Permitted if it takes under 10 seconds", "Permitted while stopped in a traffic lane", "Permitted for drivers over 25"], "why": "Set navigation before you move. Handheld operation is prohibited, and even mounted devices allow only a single tap or swipe.", "src": "hb_safe2", "conf": "single"}, {"id": "C08", "cat": "phone", "q": "You may use a handheld phone while driving in California:", "opts": ["Only to call 911 or emergency services in a genuine emergency", "Any time traffic is stopped", "Any time you are in a parking lot", "Never, under any circumstance"], "why": "Emergency calls to police, fire or medical services are the recognized exception.", "src": "hb_safe2", "conf": "single"}, {"id": "C09", "cat": "phone", "q": "Passengers can contribute to distracted driving by:", "opts": ["Engaging the driver in intense conversation or activity that takes attention from the road", "Sitting in the back seat rather than beside the driver in front", "Wearing a seat belt that the driver had to remind them to fasten", "Adjusting their own window or air vent while the vehicle is moving"], "why": "Cognitive distraction is real. Emotionally intense conversation degrades hazard detection.", "src": "hb_safe2", "conf": "single"}, {"id": "C10", "cat": "phone", "q": "The safest response if you must take an important call while driving is to:", "opts": ["Pull over safely and stop before taking the call", "Use a handheld phone briefly", "Take the call at the next red light", "Put the phone on speaker in your lap"], "why": "Pull over and stop. Only a lawfully mounted hands-free setup allows a call while moving, and even that adds cognitive load.", "src": "hb_safe2", "conf": "single"}];
+var CATS      = [["signs", "Signs & Signals"], ["row", "Right-of-Way"], ["speed", "Speed Limits"], ["park", "Parking & Curbs"], ["lanes", "Lanes, Turns & Signals"], ["dui", "Alcohol & Drugs"], ["share", "Sharing the Road"], ["lic", "Licensing & Insurance"], ["safe", "Safe Driving"], ["pass", "Seat Belts & Kids"], ["phone", "Phones & Distraction"]];
+var BLUEPRINT = [["signs", 6], ["row", 5], ["speed", 4], ["park", 4], ["lanes", 4], ["dui", 3], ["share", 3], ["lic", 3], ["safe", 2], ["pass", 1], ["phone", 1]];
+var SOURCES   = {"hb_toc": ["California Driver's Handbook (table of contents)", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/"], "hb_dl": ["Handbook \u00a71 - The California Driver License", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/the-california-driver-license/"], "hb_test": ["Handbook \u00a73 - The Testing Process", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/the-testing-process/"], "hb_intro": ["Handbook \u00a75 - An Introduction to Driving", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/introduction-to-driving/"], "hb_nav": ["Handbook \u00a76 - Navigating the Roads", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/navigating-the-roads/"], "hb_nav2": ["Handbook \u00a76 (cont.) - Parking", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/navigating-the-roads-cont1/"], "hb_laws": ["Handbook \u00a77 - Laws and Rules of the Road", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/laws-and-rules-of-the-road/"], "hb_laws1": ["Handbook \u00a77 (cont.) - Speed Limits", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/laws-and-rules-of-the-road-cont1/"], "hb_laws2": ["Handbook \u00a77 (cont.) - Points & Penalties", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/laws-and-rules-of-the-road-cont2/"], "hb_safe": ["Handbook \u00a78 - Safe Driving", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/safe-driving/"], "hb_safe1": ["Handbook \u00a78 (cont.) - Seat Belts & Child Restraints", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/safe-driving-cont1/"], "hb_change": ["Handbook \u00a74 - Changing, Replacing and Renewing Your Driver's License", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/changing-replacing-and-renewing-your-drivers-license/"], "hb_safe2": ["Handbook \u00a78 (cont.) - Speed, Distraction & Emergencies", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/safe-driving-cont2/"], "hb_alc": ["Handbook \u00a79 - Alcohol and Drugs", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/alcohol-and-drugs/"], "hb_fin": ["Handbook \u00a710 - Financial Responsibility, Insurance & Collisions", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/financial-responsibility-insurance-requirements-and-collisions/"], "hb_reg": ["Handbook \u00a711 - Vehicle Registration Requirements", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/vehicle-registration-requirements/"], "hb_dsafe": ["Handbook \u00a712 - Driver Safety", "https://www.dmv.ca.gov/portal/handbook/california-driver-handbook/driver-safety/"], "dmv_new": ["DMV - New California Resident Portal", "https://www.dmv.ca.gov/portal/driver-education-and-safety/special-interest-driver-guides/new-to-california/"], "dmv_dl": ["DMV - Driver's Licenses", "https://www.dmv.ca.gov/portal/driver-licenses-identification-cards/driver-licenses-dl/"], "dmv_prep": ["DMV - Prepare for Knowledge and Drive Tests", "https://www.dmv.ca.gov/portal/driver-licenses-identification-cards/preparing-for-knowledge-and-drive-tests/"], "dmv_fees": ["DMV - Licensing Fees", "https://www.dmv.ca.gov/portal/driver-licenses-identification-cards/licensing-fees/"], "dmv_realid": ["DMV - Apply for REAL ID", "https://www.dmv.ca.gov/portal/driver-licenses-identification-cards/real-id/"], "dmv_realid_ck": ["DMV - REAL ID Checklist", "https://www.dmv.ca.gov/portal/driver-licenses-identification-cards/real-id/real-id-checklist/"], "dmv_online": ["DMV - Online Learning and Tests", "https://www.dmv.ca.gov/portal/driver-education-and-safety/online-learning-and-tests/"], "dmv_sample": ["DMV - Sample Class C Knowledge Tests", "https://www.dmv.ca.gov/portal/driver-education-and-safety/educational-materials/sample-driver-license-dl-knowledge-tests/"], "dmv_eval06": ["DMV Research Report RSS-06-221, Evaluation of the Class C DL Written Knowledge Tests (Dec 2006)", "https://www.dmv.ca.gov/portal/report/evaluation-of-the-class-c-driver-license-written-knowledge-tests/"], "cvc12505": ["California Vehicle Code \u00a712505 (residency / 10-day rule)", "https://codes.findlaw.com/ca/vehicle-code/veh-sect-12505/"], "catsip26": ["CATSIP (UC Berkeley) - California DMV highlights new transportation safety laws in 2026", "https://catsip.berkeley.edu/news/california-dmv-highlights-new-transportation-safety-laws-2026"], "ab413": ["AB 413 'daylighting' - city/agency enforcement notices (LASD, City of Pasadena, San Mateo County)", "https://lasd.org/daylighting-ab-413/"], "sb1107": ["SB 1107 (Protect California Drivers Act) - minimum liability limits from Jan 1, 2025", "https://newsroom.statefarm.com/understanding-californias-new-auto-liability-coverage-law-10-2024/"], "tx_ins": ["Texas Department of Insurance minimums (30/60/25) - secondary summaries", "https://www.thezebra.com/auto-insurance/texas-car-insurance/state-laws-tx/"], "tx_phone": ["TxDOT - Texting and cellphone laws", "https://www.txdot.gov/safety/driving-laws/texting-cellphone-laws.html"]};
+var PLAN      = [{"id": "p1", "title": "Confirm the clock you are actually on", "detail": "California Vehicle Code \u00a712505 lets you drive on your Texas license for no more than 10 days after you establish residency. Vehicle registration is a separate, longer clock: 20 days. Residency is triggered by things like registering to vote, paying in-state tuition, claiming a homeowner's property tax exemption, or taking a job here - not just by unpacking boxes.", "who": "both", "src": "cvc12505", "conf": "verified"}, {"id": "p2", "title": "Decide REAL ID or federal non-compliant", "detail": "REAL ID costs the same $46 but needs more documents. It is what you now need to board a domestic flight. If either of you flies, get the REAL ID - otherwise you will be back at the DMV later with a passport in hand every time you fly.", "who": "both", "src": "dmv_realid", "conf": "verified"}, {"id": "p3", "title": "Start the application online before you go", "detail": "Complete the Driver's License or Identification (DL/ID) card application online and upload your documents. You still have to appear in person, but this cuts the counter time substantially.", "who": "both", "src": "dmv_dl", "conf": "verified"}, {"id": "p4", "title": "Gather documents: 1 identity + SSN + 2 California residency", "detail": "One identity document (passport or certified birth certificate), your Social Security number, and TWO different proofs of California residency showing the name and address that will print on the card. A lease, utility bill, bank statement, and vehicle registration card all qualify. You each need your own two - a single joint utility bill does not automatically cover both of you unless both names appear.", "who": "each", "src": "dmv_realid_ck", "conf": "verified"}, {"id": "p5", "title": "Book a field office appointment", "detail": "The knowledge test is generally offered on a walk-in basis, but wait times at busy offices run long. Book an appointment for the application; you cannot complete an out-of-state transfer online.", "who": "each", "src": "dmv_dl", "conf": "single"}, {"id": "p6", "title": "Pass the knowledge test in person", "detail": "36 questions. You may miss no more than 6. Three attempts are included with your $46 fee; fail three times and you reapply and pay again. No handbook, no phone, no notes. Plan on testing in person - the at-home option does not apply to original applicants.", "who": "each", "src": "hb_test", "conf": "verified"}, {"id": "p7", "title": "Vision test, thumbprint, photo, $46", "detail": "Done at the counter the same visit. The behind-the-wheel drive test is normally waived when you present a valid Texas license - though the DMV may still require one at its discretion.", "who": "each", "src": "dmv_dl", "conf": "verified"}, {"id": "p8", "title": "Register the vehicles within 20 days", "detail": "Separate deadline, separate transaction. Out-of-state vehicles need a smog certification and a VIN verification. Budget for the registration fee plus the one-time use tax if the vehicle was recently purchased.", "who": "both", "src": "hb_reg", "conf": "verified"}, {"id": "p9", "title": "Check your insurance meets California minimums", "detail": "California requires 30/60/15. Your Texas policy is 30/60/25, so your bodily-injury limits already clear the bar and your property-damage limit exceeds it. Tell your carrier you have moved anyway - rates, coverage rules and the garaging address all change.", "who": "both", "src": "hb_fin", "conf": "verified"}];
+var CHANGES   = [{"title": "Minimum liability insurance rose to 30/60/15", "when": "January 1, 2025", "what": "SB 1107 raised California's minimums from 15/30/5 to $30,000 per injury, $60,000 per crash, and $15,000 property damage - the first change in more than five decades.", "why": "Any practice test, cheat sheet or study app written before 2025 still teaches 15/30/5. If you see that answer offered, it is now wrong. The current handbook shows 30/60/15.", "src": "sb1107", "conf": "changed"}, {"title": "Daylighting: no parking within 20 feet of a crosswalk", "when": "Law effective January 1, 2024; citations began January 1, 2025; enforcement for unpainted curbs from August 1, 2025", "what": "AB 413 bans stopping, standing or parking within 20 feet of the approach side of any crosswalk, marked or unmarked - or 15 feet where a curb extension exists.", "why": "The curb does not have to be painted red for the ticket to stick. This is the single most common way people new to California collect a parking citation, and it now appears in the handbook's parking section.", "src": "ab413", "conf": "changed"}, {"title": "Move Over law broadened to any stopped vehicle", "when": "January 1, 2026", "what": "AB 390 extends the duty to slow down and move over beyond emergency vehicles and tow trucks, to any stationary vehicle displaying hazard lights, flares or warning devices.", "why": "The old mental model - move over for flashing red and blue - is now too narrow. An ordinary car on the shoulder with its flashers on triggers the same duty.", "src": "catsip26", "conf": "changed"}, {"title": "Ignition interlock program extended to 2033", "when": "January 1, 2026", "what": "AB 366 extends California's statewide ignition interlock device program for specified DUI offenders through January 1, 2033.", "why": "Relevant background for any DUI question about consequences.", "src": "catsip26", "conf": "changed"}, {"title": "Speed cameras in highway work zones; new red-light camera authority", "when": "January 1, 2026", "what": "SB 720 permits municipalities to deploy alternative automated camera systems for red light enforcement, with violations carrying civil penalties only. Separate legislation authorises automated speed enforcement in highway work zones.", "why": "Automated enforcement is expanding. Work zones in particular now carry camera risk on top of the traditional doubled fines.", "src": "catsip26", "conf": "changed"}, {"title": "$1,000 fine for making license-plate obscuring devices", "when": "January 1, 2026", "what": "AB 1085 makes manufacturing a product designed to obscure or interfere with reading a license plate an infraction carrying a $1,000 fine.", "why": "Aimed at toll evasion. Worth knowing as a 2026 change.", "src": "catsip26", "conf": "changed"}, {"title": "School zone limit drops to 20 mph - but not yet", "when": "Signed 2025; effective January 1, 2031", "what": "AB 382 lowers the prima facie school zone speed limit from 25 mph to 20 mph.", "why": "Read carefully: the effective date is 2031, not 2026. For your test, the school zone answer is still 25 mph within 500 feet while children are present.", "src": "catsip26", "conf": "changed"}, {"title": "At-home knowledge testing does not apply to you", "when": "Reported January 2025", "what": "The DMV's current online-testing page limits eLearning to eligible RENEWAL Class C applicants. Original applicants - which is what a Texas license holder is, on their first California license - test in person.", "why": "A December 2023 DMV press release did announce online testing for people moving to California from out of state. That announcement is superseded by the current page. Plan on testing in person and treat any at-home option as a bonus if offered.", "src": "dmv_online", "conf": "changed"}];
+var CONTRASTS = [{"topic": "Handheld phone calls", "ca": "Illegal for everyone. The phone must be hands-free and mounted; you get one tap or swipe. Holding it is illegal even while stopped in traffic.", "tx": "Statewide law bans texting, but talking on a handheld phone is legal outside school zones (some cities such as Austin and San Antonio ban it locally).", "risk": "high", "src": "hb_safe2"}, {"topic": "Parking near a crosswalk", "ca": "No stopping or parking within 20 feet of the approach side of any crosswalk, painted red or not (15 feet with a curb extension).", "tx": "No equivalent statewide daylighting rule.", "risk": "high", "src": "ab413"}, {"topic": "Top speed limit", "ca": "65 mph maximum, 70 mph only where posted. Two-lane undivided highways are 55 mph. Towing a trailer caps you at 55 mph.", "tx": "Rural interstates commonly posted 75 mph, with higher limits on some designated routes.", "risk": "high", "src": "hb_laws1"}, {"topic": "Wipers on = headlights on", "ca": "Required. If rain, fog or snow has your wipers running, your low beams must be on.", "tx": "No equivalent statewide requirement.", "risk": "medium", "src": "hb_intro"}, {"topic": "Child seats", "ca": "Rear-facing until age 2 (unless 40 lb or 3'4\"). Under 8 or under 4'9\" must be in a child restraint in the REAR seat.", "tx": "Child restraint required until age 8 or 4'9\", but no statewide rear-facing age mandate and no back-seat mandate.", "risk": "medium", "src": "hb_safe1"}, {"topic": "Passing a bicyclist", "ca": "Three feet minimum when you cannot change lanes. If you cannot give three feet, slow down and wait.", "tx": "No statewide three-foot safe-passing law.", "risk": "medium", "src": "hb_laws1"}, {"topic": "Minimum liability insurance", "ca": "30/60/15 since January 1, 2025.", "tx": "30/60/25. Your bodily-injury limits already meet California's; property damage is higher in Texas.", "risk": "low", "src": "hb_fin"}, {"topic": "Points on your record", "ca": "An active point system: license suspension at 4 points in 12 months, 6 in 24, or 8 in 36. Convictions stay 36 months or longer.", "tx": "Texas ended its Driver Responsibility Program surcharges in 2019.", "risk": "medium", "src": "hb_laws2"}, {"topic": "Lane splitting by motorcycles", "ca": "Legal. Expect motorcycles between lanes in slow traffic and check mirrors before any lane change.", "tx": "Not permitted.", "risk": "medium", "src": "hb_safe2"}, {"topic": "Smog check", "ca": "Required to register most out-of-state vehicles, and biennially thereafter.", "tx": "Emissions testing applies only in certain counties.", "risk": "low", "src": "hb_reg"}];
+var NUMBERS   = [["Deadlines", [["10 days", "To apply for a California driver license after establishing residency", "cvc12505"], ["20 days", "To register an out-of-state vehicle", "hb_reg"], ["10 days", "To transfer title after buying a vehicle", "hb_reg"], ["5 days", "To notify DMV after selling a vehicle", "hb_reg"], ["10 days", "To notify DMV of an address change", "hb_change"], ["10 days", "To file an SR 1 collision report with DMV", "hb_fin"], ["24 hours", "To report a collision involving injury or death to law enforcement", "hb_fin"]]], ["Speed limits", [["15 mph", "Alleys, blind intersections, and within 100 ft of an obstructed railroad crossing", "hb_laws1"], ["25 mph", "Residential and business districts; school zones within 500 ft when children are present", "hb_laws1"], ["55 mph", "Two-lane undivided highways; vehicles towing trailers", "hb_laws1"], ["65 mph", "Most freeways (70 mph only where posted)", "hb_laws1"]]], ["Distances", [["3 feet", "Minimum when passing a bicyclist you cannot change lanes for", "hb_laws1"], ["3 feet", "Keep clear of a disabled-access sidewalk ramp", "hb_nav2"], ["15 feet", "Keep clear of a fire hydrant; crosswalks with a curb extension", "hb_nav2"], ["18 inches", "Maximum distance from the curb when parallel parked", "hb_nav2"], ["20 feet", "Daylighting - keep clear of the approach side of any crosswalk", "hb_nav2"], ["100 feet", "Signal before a turn", "hb_nav"], ["200 feet", "Maximum travel in a center left-turn lane; visibility needed for a U-turn", "hb_nav"], ["300 feet", "Dim high beams when following another vehicle", "hb_intro"], ["400 feet", "Clear view needed both ways at a railroad crossing to avoid the 15 mph rule", "hb_laws1"], ["400 feet", "Roughly 5 seconds - how far ahead to signal before a freeway exit", "hb_nav"], ["500 feet", "Dim high beams for oncoming traffic; school zone radius", "hb_intro"], ["1,000 feet", "Visibility threshold below which headlights are required", "hb_intro"]]], ["Blood alcohol limits", [["0.01%", "Under 21, or anyone on DUI probation", "hb_alc"], ["0.04%", "Commercial license holders and passenger-for-hire drivers", "hb_alc"], ["0.08%", "Drivers 21 and over", "hb_alc"]]], ["Money & points", [["$46", "Original or renewal Class C driver license fee", "dmv_fees"], ["$40", "Identification card", "dmv_fees"], ["$37", "Replacement driver license", "dmv_fees"], ["$1,000", "SR 1 collision report threshold; also the maximum school-bus passing fine", "hb_fin"], ["4 / 6 / 8", "Points in 12 / 24 / 36 months that trigger negligent-operator action", "hb_laws2"], ["30 / 60 / 15", "Minimum liability insurance in thousands of dollars", "hb_fin"]]], ["The test itself", [["36", "Questions on the adult Class C knowledge test", "dmv_eval06"], ["6", "Maximum wrong answers allowed", "dmv_eval06"], ["30", "Correct answers needed to pass (83%)", "dmv_eval06"], ["3", "Attempts included with your application fee", "hb_test"]]]];
+var CAVEATS   = [["Test length and pass mark are not published on a current DMV page.", "The 36-question / 6-allowable-error structure comes from the DMV's own research report RSS-06-221 (December 2006), which states the passing standard allows 'six errors for DL 5 original applicants'. That is a primary source, but it is nearly twenty years old. Numerous current commercial prep sites repeat 36 questions and 30 correct, but the DMV does not appear to publish the count on a live page today. Treat 36/30 as the planning assumption, not a guarantee. What is certain from the current handbook: three attempts before you reapply.", "dmv_eval06"], ["The at-home testing question has a genuine source conflict.", "A DMV press release dated December 28, 2023 announced online knowledge testing for 'individuals moving to California from out of state'. The DMV's current Online Learning and Tests page states that only eligible RENEWAL Class C applicants qualify for eLearning. Secondary reporting says at-home testing for new applicants ended in January 2025. We have not resolved this against a single authoritative current statement, so the dashboard tells you to plan for an in-person test. Ask when you book.", "dmv_online"], ["The Texas column is context, not tested material.", "Every California claim in this dashboard is cited to the California Driver's Handbook, the Vehicle Code, or a DMV page. The Texas comparisons are drawn from TxDOT and reputable secondary summaries and are included only to flag habits worth unlearning. Nothing about Texas law appears on the California test.", "tx_phone"], ["'Verified' and 'single source' mean two different things here.", "An item badged 'verified' has its wording taken from handbook or Vehicle Code text actually fetched while this page was built; its citation reads 'Source'. An item badged 'single source' is standard California driver-education material that the current online handbook section did not restate verbatim, or that was found in only one place; its citation deliberately reads 'Related section' rather than 'Source', so it never implies a quote we do not have. Line markings, a few vehicle-handling items and some maximum speed limits fall in this second group. One question was cut during review because its claim could not be traced to any page fetched, and one citation was corrected after review from handbook section 11 to section 4.", "hb_toc"], ["Local rules can be stricter than state rules.", "Cities set their own parking regimes, permit zones, street-sweeping schedules and in some cases stricter phone ordinances. The state rules here are the floor.", "hb_toc"], ["Nothing here is legal advice.", "This is a study aid built from public DMV material. For anything consequential - a citation, a suspension, an insurance dispute - talk to the DMV or a licensed professional.", "hb_toc"]];
+
+var CATNAME = {}; CATS.forEach(function(c){ CATNAME[c[0]] = c[1]; });
+var BYID = {}; BANK.forEach(function(q){ BYID[q.id] = q; });
+
+/* ---------------- storage (best effort) ---------------- */
+var KEY = "cadmv.v1";
+var store = { who:"A", names:{A:"Driver A", B:"Driver B"}, resDate:"",
+              plan:{A:{},B:{}}, miss:{A:{},B:{}}, seen:{A:{},B:{}} };
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){
+      var o = JSON.parse(raw);
+      if(o && typeof o === "object"){
+        ["who","resDate"].forEach(function(k){ if(o[k]) store[k]=o[k]; });
+        ["names","plan","miss","seen"].forEach(function(k){
+          if(o[k] && typeof o[k]==="object"){
+            if(k==="names"){ if(o.names.A) store.names.A=o.names.A; if(o.names.B) store.names.B=o.names.B; }
+            else { store[k].A = o[k].A || {}; store[k].B = o[k].B || {}; }
+          }
+        });
+      }
+    }
+  }catch(e){ /* private mode, blocked storage - run in-memory */ }
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
+}
+load();
+function who(){ return store.who; }
+
+/* ---------------- helpers ---------------- */
+function el(tag, cls, txt){
+  var n = document.createElement(tag);
+  if(cls) n.className = cls;
+  if(txt !== undefined && txt !== null) n.textContent = txt;
+  return n;
+}
+function shuffle(a){
+  var r = a.slice();
+  for(var i=r.length-1;i>0;i--){ var j = Math.floor(Math.random()*(i+1)); var t=r[i]; r[i]=r[j]; r[j]=t; }
+  return r;
+}
+function srcLink(key, conf){
+  var s = SOURCES[key];
+  var wrap = el("div","cite");
+  if(!s){ wrap.appendChild(el("span",null,"source unavailable")); return wrap; }
+  var a = document.createElement("a");
+  a.href = s[1]; a.target = "_blank"; a.rel = "noopener noreferrer"; a.textContent = s[0];
+  // "Source" means the wording was taken from text fetched during the build.
+  // "Related section" means the rule is standard California practice but that
+  // page did not restate it verbatim - do not imply a quote we do not have.
+  wrap.appendChild(el("span",null, conf === "single" ? "Related section" : "Source"));
+  wrap.appendChild(a);
+  return wrap;
+}
+function confBadge(conf){
+  var map = {verified:"Verified", single:"Single source", changed:"Recently changed"};
+  return el("span","badge "+conf, map[conf] || conf);
+}
+
+/* ---------------- tabs ---------------- */
+var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+tabs.forEach(function(t){
+  t.addEventListener("click", function(){
+    tabs.forEach(function(o){
+      var on = (o === t);
+      o.setAttribute("aria-selected", on ? "true" : "false");
+      var sec = document.getElementById("tab-" + o.dataset.tab);
+      if(sec) sec.classList.toggle("hide", !on);
+    });
+    window.scrollTo(0,0);
+  });
+});
+
+/* ---------------- theme ---------------- */
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var cur = document.documentElement.getAttribute("data-theme");
+  if(!cur){
+    var darkNow = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    cur = darkNow ? "dark" : "light";
+  }
+  document.documentElement.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+});
+
+/* ---------------- people ---------------- */
+var pA = document.getElementById("pA"), pB = document.getElementById("pB");
+function paintPeople(){
+  pA.textContent = store.names.A; pB.textContent = store.names.B;
+  pA.setAttribute("aria-pressed", who()==="A" ? "true":"false");
+  pB.setAttribute("aria-pressed", who()==="B" ? "true":"false");
+}
+function switchTo(k){ store.who = k; save(); paintPeople(); renderPlan(); renderDrillStats(); }
+pA.addEventListener("click", function(){ switchTo("A"); });
+pB.addEventListener("click", function(){ switchTo("B"); });
+document.getElementById("renameBtn").addEventListener("click", function(){
+  var a = window.prompt("Name for the first driver", store.names.A);
+  if(a !== null && a.trim()) store.names.A = a.trim().slice(0,22);
+  var b = window.prompt("Name for the second driver", store.names.B);
+  if(b !== null && b.trim()) store.names.B = b.trim().slice(0,22);
+  save(); paintPeople(); renderPlan();
+});
+paintPeople();
+
+/* ---------------- plan: deadline clocks ---------------- */
+var resInput = document.getElementById("resDate");
+resInput.value = store.resDate || "";
+resInput.addEventListener("change", function(){ store.resDate = resInput.value; save(); renderClocks(); });
+
+function renderClocks(){
+  var box = document.getElementById("clocks");
+  box.textContent = "";
+  var defs = [
+    {n:10, k:"Driver license", d:"CVC \u00A712505 \u2014 apply within 10 days of establishing residency"},
+    {n:20, k:"Vehicle registration", d:"Register an out-of-state vehicle within 20 days"}
+  ];
+  var base = store.resDate ? new Date(store.resDate + "T00:00:00") : null;
+  defs.forEach(function(d){
+    var c = el("div","clock");
+    c.appendChild(el("div","k", d.k));
+    if(base && !isNaN(base.getTime())){
+      var due = new Date(base.getTime()); due.setDate(due.getDate() + d.n);
+      var today = new Date(); today.setHours(0,0,0,0);
+      var left = Math.round((due - today) / 86400000);
+      var n = el("div","n", left >= 0 ? (left + (left===1?" day":" days")) : (Math.abs(left) + " over"));
+      c.appendChild(n);
+      c.appendChild(el("div","d", (left >= 0 ? "Due " : "Was due ") + due.toLocaleDateString(undefined,
+        {month:"short", day:"numeric", year:"numeric"})));
+      c.classList.add(left < 0 ? "over" : (left <= 3 ? "soon" : "ok"));
+    } else {
+      c.appendChild(el("div","n", d.n + " days"));
+      c.appendChild(el("div","d", d.d));
+    }
+    box.appendChild(c);
+  });
+}
+renderClocks();
+
+/* ---------------- plan: checklist ---------------- */
+function renderPlan(){
+  var host = document.getElementById("planSteps");
+  host.textContent = "";
+  var state = store.plan[who()] || (store.plan[who()] = {});
+  var done = 0;
+  PLAN.forEach(function(s){
+    var isDone = !!state[s.id];
+    if(isDone) done++;
+    var row = el("div","step" + (isDone ? " done" : ""));
+    var cb = el("button","cb","\u2713");
+    cb.type = "button";
+    cb.setAttribute("aria-pressed", isDone ? "true":"false");
+    cb.setAttribute("aria-label", (isDone ? "Completed: " : "Mark complete: ") + s.title);
+    cb.addEventListener("click", function(){
+      if(state[s.id]) delete state[s.id]; else state[s.id] = 1;
+      save(); renderPlan();
+    });
+    var st = el("div","st");
+    var b = el("b", null, s.title);
+    if(s.who === "each"){
+      var tag = el("span","whotag","each of you");
+      b.appendChild(tag);
+    }
+    st.appendChild(b);
+    st.appendChild(el("p", null, s.detail));
+    var meta = el("div","cite");
+    meta.style.marginTop = "8px";
+    meta.appendChild(confBadge(s.conf));
+    var sl = srcLink(s.src, s.conf);
+    while(sl.firstChild) meta.appendChild(sl.firstChild);
+    st.appendChild(meta);
+    row.appendChild(cb); row.appendChild(st);
+    host.appendChild(row);
+  });
+  document.getElementById("planCount").textContent =
+    done + " of " + PLAN.length + " done \u00B7 " + store.names[who()];
+}
+renderPlan();
+
+/* ---------------- quiz engine ---------------- */
+function makeQuestionCard(item, opts){
+  // opts: {index, total, onAnswer, immediate, preset}
+  var frag = document.createDocumentFragment();
+  var meta = el("div","qmeta");
+  meta.appendChild(el("span", null, "Question " + (opts.index+1) + " of " + opts.total));
+  meta.appendChild(el("span", null, CATNAME[item.cat] || item.cat));
+  frag.appendChild(meta);
+  var track = el("div","track");
+  var fill = el("div","fill");
+  fill.style.width = Math.round(((opts.index) / opts.total) * 100) + "%";
+  track.appendChild(fill); frag.appendChild(track);
+
+  frag.appendChild(el("p","qtext", item.q));
+
+  var order = item._order || (item._order = shuffle(item.opts.map(function(_,i){ return i; })));
+  var wrap = el("div","opts");
+  var buttons = [];
+  order.forEach(function(origIdx, pos){
+    var b = el("button","opt");
+    b.type = "button";
+    var k = el("span","k", String(pos+1));
+    b.appendChild(k);
+    b.appendChild(el("span", null, item.opts[origIdx]));
+    b.dataset.orig = String(origIdx);
+    wrap.appendChild(b);
+    buttons.push(b);
+  });
+  frag.appendChild(wrap);
+  return {frag:frag, buttons:buttons, order:order};
+}
+
+/* ---------------- drill ---------------- */
+var drillCats = {};      // selected categories; empty object = all
+var drillQueue = [], drillPos = 0;
+var drillSession = {n:0, right:0, streak:0, best:0};
+
+function renderChips(){
+  var host = document.getElementById("catChips");
+  host.textContent = "";
+  var counts = {};
+  BANK.forEach(function(q){ counts[q.cat] = (counts[q.cat]||0)+1; });
+  var all = el("button","chip");
+  all.type = "button";
+  all.textContent = "All topics";
+  var allCt = el("span","ct", String(BANK.length));
+  all.appendChild(allCt);
+  all.setAttribute("aria-pressed", Object.keys(drillCats).length===0 ? "true":"false");
+  all.addEventListener("click", function(){ drillCats = {}; renderChips(); });
+  host.appendChild(all);
+  CATS.forEach(function(c){
+    var b = el("button","chip");
+    b.type = "button";
+    b.textContent = c[1];
+    var ct = el("span","ct", String(counts[c[0]]||0));
+    b.appendChild(ct);
+    b.setAttribute("aria-pressed", drillCats[c[0]] ? "true":"false");
+    b.addEventListener("click", function(){
+      if(drillCats[c[0]]) delete drillCats[c[0]]; else drillCats[c[0]] = 1;
+      renderChips();
+    });
+    host.appendChild(b);
+  });
+}
+renderChips();
+
+function drillPool(){
+  var keys = Object.keys(drillCats);
+  if(!keys.length) return BANK.slice();
+  return BANK.filter(function(q){ return drillCats[q.cat]; });
+}
+
+document.getElementById("drillStart").addEventListener("click", function(){
+  var pool = drillPool();
+  if(!pool.length){ return; }
+  drillQueue = shuffle(pool); drillPos = 0;
+  drillSession = {n:0, right:0, streak:0, best:0};
+  document.getElementById("drillStage").classList.remove("hide");
+  document.getElementById("drillStats").classList.remove("hide");
+  showDrill();
+});
+document.getElementById("drillMissed").addEventListener("click", function(){
+  var miss = store.miss[who()] || {};
+  var ids = Object.keys(miss).filter(function(id){ return BYID[id]; });
+  var stage = document.getElementById("drillStage");
+  stage.classList.remove("hide");
+  document.getElementById("drillStats").classList.remove("hide");
+  if(!ids.length){
+    stage.textContent = "";
+    stage.appendChild(el("p","empty","Nothing in the miss list yet for " + store.names[who()] +
+      ". Anything answered wrong in a drill or a mock test lands here."));
+    return;
+  }
+  drillQueue = shuffle(ids.map(function(id){ return BYID[id]; }));
+  drillPos = 0;
+  drillSession = {n:0, right:0, streak:0, best:0};
+  showDrill();
+});
+
+function showDrill(){
+  var stage = document.getElementById("drillStage");
+  stage.textContent = "";
+  if(drillPos >= drillQueue.length){
+    stage.appendChild(el("p","empty","Deck finished \u2014 " + drillSession.right + " of " +
+      drillSession.n + " correct. Pick topics above to go again."));
+    return;
+  }
+  var item = drillQueue[drillPos];
+  item._order = null;
+  var built = makeQuestionCard(item, {index:drillPos, total:drillQueue.length});
+  stage.appendChild(built.frag);
+
+  var answered = false;
+  function answer(origIdx){
+    if(answered) return;
+    answered = true;
+    var correct = (origIdx === 0);
+    drillSession.n++;
+    if(correct){
+      drillSession.right++; drillSession.streak++;
+      if(drillSession.streak > drillSession.best) drillSession.best = drillSession.streak;
+      if(store.miss[who()][item.id]) delete store.miss[who()][item.id];
+    } else {
+      drillSession.streak = 0;
+      store.miss[who()][item.id] = 1;
+    }
+    store.seen[who()][item.id] = (store.seen[who()][item.id] || 0) + (correct ? 1 : 0);
+    save();
+
+    built.buttons.forEach(function(b){
+      b.disabled = true;
+      var oi = parseInt(b.dataset.orig, 10);
+      if(oi === 0) b.classList.add("correct");
+      else if(oi === origIdx) b.classList.add("wrong");
+    });
+
+    var rev = el("div","reveal");
+    var v = el("div","verdict " + (correct ? "ok":"no"), correct ? "\u2713 Correct" : "\u2715 Not quite");
+    rev.appendChild(v);
+    rev.appendChild(el("p","why", item.why));
+    var meta = el("div","cite");
+    meta.appendChild(confBadge(item.conf));
+    var sl = srcLink(item.src, item.conf);
+    while(sl.firstChild) meta.appendChild(sl.firstChild);
+    rev.appendChild(meta);
+    var nextRow = el("div","btnrow");
+    nextRow.style.marginTop = "16px";
+    var nb = el("button","act", drillPos+1 >= drillQueue.length ? "Finish" : "Next question");
+    nb.type = "button";
+    nb.addEventListener("click", function(){ drillPos++; showDrill(); });
+    nextRow.appendChild(nb);
+    rev.appendChild(nextRow);
+    stage.appendChild(rev);
+    nb.focus();
+    renderDrillStats();
+  }
+
+  built.buttons.forEach(function(b){
+    b.addEventListener("click", function(){ answer(parseInt(b.dataset.orig,10)); });
+  });
+
+  stage._keyHandler = function(e){
+    if(answered){
+      if(e.key === "Enter"){ drillPos++; showDrill(); }
+      return;
+    }
+    var n = parseInt(e.key, 10);
+    if(n >= 1 && n <= built.buttons.length){
+      built.buttons[n-1].click();
+    }
+  };
+  renderDrillStats();
+}
+
+document.addEventListener("keydown", function(e){
+  var stage = document.getElementById("drillStage");
+  if(stage && !stage.classList.contains("hide") &&
+     document.getElementById("tab-drill") && !document.getElementById("tab-drill").classList.contains("hide") &&
+     stage._keyHandler){
+    if(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    stage._keyHandler(e);
+  }
+});
+
+function renderDrillStats(){
+  var host = document.getElementById("drillTiles");
+  if(!host) return;
+  host.textContent = "";
+  var missCount = Object.keys(store.miss[who()] || {}).length;
+  var pct = drillSession.n ? Math.round((drillSession.right / drillSession.n) * 100) : 0;
+  [
+    ["Answered", String(drillSession.n), "this session"],
+    ["Accuracy", drillSession.n ? pct + "%" : "\u2014", drillSession.right + " correct"],
+    ["Best streak", String(drillSession.best), "in a row"],
+    ["Miss list", String(missCount), store.names[who()]]
+  ].forEach(function(t){
+    var d = el("div","tile");
+    d.appendChild(el("div","k", t[0]));
+    d.appendChild(el("div","v", t[1]));
+    d.appendChild(el("div","f", t[2]));
+    host.appendChild(d);
+  });
+}
+renderDrillStats();
+
+/* ---------------- mock test ---------------- */
+var testQs = [], testPos = 0, testAnswers = [];
+
+function buildExam(){
+  var picked = [];
+  BLUEPRINT.forEach(function(row){
+    var cat = row[0], n = row[1];
+    var pool = shuffle(BANK.filter(function(q){ return q.cat === cat; }));
+    picked = picked.concat(pool.slice(0, n));
+  });
+  return shuffle(picked);
+}
+
+document.getElementById("testStart").addEventListener("click", function(){
+  testQs = buildExam(); testPos = 0; testAnswers = [];
+  document.getElementById("testIntro").classList.add("hide");
+  document.getElementById("testResult").classList.add("hide");
+  document.getElementById("testReview").textContent = "";
+  document.getElementById("testStage").classList.remove("hide");
+  showTest();
+});
+
+function showTest(){
+  var stage = document.getElementById("testStage");
+  stage.textContent = "";
+  if(testPos >= testQs.length){ finishTest(); return; }
+  var item = testQs[testPos];
+  item._order = null;
+  var built = makeQuestionCard(item, {index:testPos, total:testQs.length});
+  stage.appendChild(built.frag);
+
+  var chosen = (testAnswers[testPos] !== undefined) ? testAnswers[testPos] : null;
+  function paint(){
+    built.buttons.forEach(function(b){
+      b.classList.toggle("chosen", parseInt(b.dataset.orig,10) === chosen);
+    });
+    nextBtn.disabled = (chosen === null);
+  }
+  built.buttons.forEach(function(b){
+    b.addEventListener("click", function(){
+      chosen = parseInt(b.dataset.orig,10);
+      testAnswers[testPos] = chosen;
+      paint();
+    });
+  });
+
+  var row = el("div","btnrow");
+  row.style.marginTop = "18px";
+  var backBtn = el("button","ghost","Back");
+  backBtn.type = "button";
+  backBtn.disabled = (testPos === 0);
+  backBtn.addEventListener("click", function(){ testPos--; showTest(); });
+  var nextBtn = el("button","act", testPos+1 >= testQs.length ? "Submit test" : "Next");
+  nextBtn.type = "button";
+  nextBtn.addEventListener("click", function(){ testPos++; showTest(); });
+  row.appendChild(backBtn); row.appendChild(nextBtn);
+  stage.appendChild(row);
+  var skip = el("p","muted","You can go back and change answers before you submit. Nothing is marked until then.");
+  skip.style.marginTop = "10px";
+  stage.appendChild(skip);
+  paint();
+}
+
+function finishTest(){
+  document.getElementById("testStage").classList.add("hide");
+  var wrong = [];
+  testQs.forEach(function(q, i){
+    if(testAnswers[i] !== 0){ wrong.push({q:q, given:testAnswers[i]}); store.miss[who()][q.id] = 1; }
+    else if(store.miss[who()][q.id]) delete store.miss[who()][q.id];
+  });
+  save();
+  var missed = wrong.length;
+  var right = testQs.length - missed;
+  var passed = missed <= 6;
+
+  var res = document.getElementById("testResult");
+  res.classList.remove("hide");
+  res.textContent = "";
+  var line = el("div","scoreline");
+  line.appendChild(el("div","big", right + "/" + testQs.length));
+  line.appendChild(el("span","pillverdict " + (passed ? "pass":"fail"), passed ? "Pass" : "Fail"));
+  res.appendChild(line);
+  res.appendChild(el("p","lede", passed
+    ? "That clears the bar \u2014 the real test allows up to 6 wrong out of 36. Missed questions have been added to " + store.names[who()] + "'s miss list."
+    : "That is " + missed + " wrong; the real test allows 6. Everything you missed is now in " + store.names[who()] + "'s miss list \u2014 the Drill tab can re-run just those."));
+
+  var tiles = el("div","tiles");
+  [["Correct", String(right), "of " + testQs.length],
+   ["Missed", String(missed), "6 allowed"],
+   ["Score", Math.round((right/testQs.length)*100) + "%", "83% needed"]].forEach(function(t){
+    var d = el("div","tile");
+    d.appendChild(el("div","k", t[0]));
+    d.appendChild(el("div","v", t[1]));
+    d.appendChild(el("div","f", t[2]));
+    tiles.appendChild(d);
+  });
+  res.appendChild(tiles);
+
+  // per-topic breakdown
+  var byCat = {};
+  testQs.forEach(function(q,i){
+    if(!byCat[q.cat]) byCat[q.cat] = {n:0, r:0};
+    byCat[q.cat].n++;
+    if(testAnswers[i] === 0) byCat[q.cat].r++;
+  });
+  var bars = el("div","bars");
+  bars.appendChild(el("h3", null, "By topic"));
+  Object.keys(byCat).sort(function(a,b){
+    return (byCat[a].r/byCat[a].n) - (byCat[b].r/byCat[b].n);
+  }).forEach(function(cat){
+    var d = byCat[cat], p = Math.round((d.r/d.n)*100);
+    var row = el("div","bar");
+    var hd = el("div","hd");
+    hd.appendChild(el("span","nm", CATNAME[cat] || cat));
+    hd.appendChild(el("span","vl", d.r + "/" + d.n));
+    row.appendChild(hd);
+    var tr = el("div","tr");
+    var fl = el("div","fl");
+    fl.style.width = p + "%";
+    fl.style.background = p >= 83 ? "var(--good)" : (p >= 60 ? "var(--warn)" : "var(--bad)");
+    tr.appendChild(fl); row.appendChild(tr);
+    bars.appendChild(row);
+  });
+  res.appendChild(bars);
+
+  var row2 = el("div","btnrow");
+  row2.style.marginTop = "18px";
+  var again = el("button","act","New mock test");
+  again.type = "button";
+  again.addEventListener("click", function(){ document.getElementById("testStart").click(); });
+  var back = el("button","ghost","Back to start");
+  back.type = "button";
+  back.addEventListener("click", function(){
+    document.getElementById("testResult").classList.add("hide");
+    document.getElementById("testReview").textContent = "";
+    document.getElementById("testIntro").classList.remove("hide");
+  });
+  row2.appendChild(again); row2.appendChild(back);
+  res.appendChild(row2);
+
+  // review
+  var rv = document.getElementById("testReview");
+  rv.textContent = "";
+  if(wrong.length){
+    var head = el("div","card");
+    head.appendChild(el("h3", null, "What you missed"));
+    head.appendChild(el("p","muted","The correct answer, why it is correct, and where it comes from."));
+    rv.appendChild(head);
+    wrong.forEach(function(w){
+      var d = el("div","rev wrong");
+      d.appendChild(el("p","rq", w.q.q));
+      var ga = el("p","ra bad");
+      ga.appendChild(el("span","l","You said"));
+      ga.appendChild(document.createTextNode(w.given === undefined || w.given === null
+        ? "(no answer)" : w.q.opts[w.given]));
+      d.appendChild(ga);
+      var ca = el("p","ra good");
+      ca.appendChild(el("span","l","Correct"));
+      ca.appendChild(document.createTextNode(w.q.opts[0]));
+      d.appendChild(ca);
+      d.appendChild(el("p","why", w.q.why));
+      var meta = el("div","cite");
+      meta.appendChild(confBadge(w.q.conf));
+      var sl = srcLink(w.q.src, w.q.conf);
+      while(sl.firstChild) meta.appendChild(sl.firstChild);
+      d.appendChild(meta);
+      rv.appendChild(d);
+    });
+  }
+  window.scrollTo(0,0);
+}
+
+/* ---------------- from texas ---------------- */
+(function(){
+  var host = document.getElementById("contrastList");
+  CONTRASTS.forEach(function(c){
+    var d = el("div","contrast");
+    var h = el("h3", null, c.topic);
+    h.appendChild(el("span","badge " + (c.risk==="high"?"hi":c.risk==="medium"?"med":"lo"),
+      c.risk === "high" ? "High" : c.risk === "medium" ? "Medium" : "Low"));
+    d.appendChild(h);
+    var cc = el("div","cc");
+    var ca = el("div","side ca");
+    ca.appendChild(el("div","lb","In California"));
+    ca.appendChild(el("p", null, c.ca));
+    var tx = el("div","side");
+    tx.appendChild(el("div","lb","What you are used to in Texas"));
+    tx.appendChild(el("p", null, c.tx));
+    cc.appendChild(ca); cc.appendChild(tx);
+    d.appendChild(cc);
+    var meta = el("div","cite");
+    meta.style.marginTop = "11px";
+    var sl = srcLink(c.src);
+    while(sl.firstChild) meta.appendChild(sl.firstChild);
+    d.appendChild(meta);
+    host.appendChild(d);
+  });
+})();
+
+/* ---------------- what changed ---------------- */
+(function(){
+  var host = document.getElementById("changeList");
+  CHANGES.forEach(function(c){
+    var d = el("div","changeitem");
+    d.appendChild(el("div","when", c.when));
+    d.appendChild(el("h3", null, c.title));
+    d.appendChild(el("p", null, c.what));
+    var wl = el("div","whyline");
+    wl.appendChild(el("div","lb","Why it matters to you"));
+    wl.appendChild(el("p", null, c.why));
+    d.appendChild(wl);
+    var meta = el("div","cite");
+    meta.style.marginTop = "11px";
+    meta.appendChild(confBadge(c.conf));
+    var sl = srcLink(c.src, c.conf);
+    while(sl.firstChild) meta.appendChild(sl.firstChild);
+    d.appendChild(meta);
+    host.appendChild(d);
+  });
+})();
+
+/* ---------------- numbers ---------------- */
+(function(){
+  var host = document.getElementById("numberList");
+  NUMBERS.forEach(function(group, gi){
+    var det = document.createElement("details");
+    if(gi < 2) det.open = true;
+    var sum = document.createElement("summary");
+    var st = el("span","sumtitle", group[0]);
+    sum.appendChild(st);
+    det.appendChild(sum);
+    var body = el("div","body");
+    var sc = el("div","scroll");
+    var tb = document.createElement("table");
+    var thead = document.createElement("thead");
+    var htr = document.createElement("tr");
+    ["Value","What it applies to"].forEach(function(h){
+      var th = document.createElement("th"); th.textContent = h; htr.appendChild(th);
+    });
+    thead.appendChild(htr); tb.appendChild(thead);
+    var tbody = document.createElement("tbody");
+    group[1].forEach(function(row){
+      var tr = document.createElement("tr");
+      var td1 = document.createElement("td");
+      td1.appendChild(el("span","val", row[0]));
+      var td2 = document.createElement("td");
+      td2.appendChild(document.createTextNode(row[1] + " "));
+      var s = SOURCES[row[2]];
+      if(s){
+        var a = document.createElement("a");
+        a.href = s[1]; a.target = "_blank"; a.rel = "noopener noreferrer";
+        a.textContent = "\u2197";
+        a.title = s[0];
+        a.style.color = "var(--accent)";
+        a.style.textDecoration = "none";
+        td2.appendChild(a);
+      }
+      tr.appendChild(td1); tr.appendChild(td2);
+      tbody.appendChild(tr);
+    });
+    tb.appendChild(tbody);
+    sc.appendChild(tb); body.appendChild(sc); det.appendChild(body);
+    host.appendChild(det);
+  });
+})();
+
+/* ---------------- sources ---------------- */
+(function(){
+  var counts = {verified:0, single:0, changed:0};
+  BANK.forEach(function(q){ if(counts[q.conf] !== undefined) counts[q.conf]++; });
+  var tiles = document.getElementById("srcTiles");
+  [["Questions", String(BANK.length), "across " + CATS.length + " topics"],
+   ["Verified", String(counts.verified), "from fetched source text"],
+   ["Single source", String(counts.single), "found in one place"],
+   ["Recently changed", String(counts.changed), "older guides are stale"]].forEach(function(t){
+    var d = el("div","tile");
+    d.appendChild(el("div","k", t[0]));
+    d.appendChild(el("div","v", t[1]));
+    d.appendChild(el("div","f", t[2]));
+    tiles.appendChild(d);
+  });
+
+  var cl = document.getElementById("caveatList");
+  CAVEATS.forEach(function(c){
+    var det = document.createElement("details");
+    var sum = document.createElement("summary");
+    sum.appendChild(el("span","sumtitle", c[0]));
+    det.appendChild(sum);
+    var body = el("div","body");
+    body.appendChild(el("p","prose", c[1]));
+    var meta = el("div","cite");
+    meta.style.marginTop = "10px";
+    var sl = srcLink(c[2]);
+    while(sl.firstChild) meta.appendChild(sl.firstChild);
+    body.appendChild(meta);
+    det.appendChild(body);
+    cl.appendChild(det);
+  });
+
+  var tb = document.getElementById("srcTable");
+  var thead = document.createElement("thead");
+  var htr = document.createElement("tr");
+  ["Source","Link"].forEach(function(h){
+    var th = document.createElement("th"); th.textContent = h; htr.appendChild(th);
+  });
+  thead.appendChild(htr); tb.appendChild(thead);
+  var tbody = document.createElement("tbody");
+  Object.keys(SOURCES).sort(function(a,b){
+    return SOURCES[a][0].localeCompare(SOURCES[b][0]);
+  }).forEach(function(k){
+    var s = SOURCES[k];
+    var tr = document.createElement("tr");
+    var td1 = document.createElement("td"); td1.textContent = s[0];
+    var td2 = document.createElement("td");
+    var a = document.createElement("a");
+    a.href = s[1]; a.target = "_blank"; a.rel = "noopener noreferrer";
+    a.textContent = "open"; a.style.color = "var(--accent)";
+    td2.appendChild(a);
+    tr.appendChild(td1); tr.appendChild(td2);
+    tbody.appendChild(tr);
+  });
+  tb.appendChild(tbody);
+})();
+</script>
