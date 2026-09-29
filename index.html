@@ -268,6 +268,20 @@ button.opt:disabled{cursor:default}
 .rev .ra .l{color:var(--ink-3); font-size:11px; text-transform:uppercase; letter-spacing:.05em; font-weight:600; margin-right:5px}
 .rev .ra.good{color:var(--good)} .rev .ra.bad{color:var(--bad)}
 
+/* ---------- sync ---------- */
+.synccard{margin-bottom:12px; box-shadow:var(--shadow)}
+.synccard > summary{gap:10px}
+.synccard > summary .sumtitle{flex:none}
+.syncstat{
+  font-size:12px; color:var(--ink-3); margin-left:auto; text-align:right;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0;
+}
+.syncstat.ok{color:var(--good)}
+.syncstat.bad{color:var(--bad)}
+.syncstat.off{color:var(--ink-3)}
+.synccard code{font-family:var(--mono); font-size:12px; background:var(--surface-2);
+  padding:1px 5px; border-radius:4px}
+
 /* ---------- audiobook ---------- */
 .chgroup{margin-top:18px}
 .chgroup > .ghead{font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-3);
@@ -429,6 +443,35 @@ footer.foot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
 
 <!-- ============ PLAN ============ -->
 <section id="tab-plan">
+  <details class="synccard" id="syncCard">
+    <summary>
+      <span class="sumtitle">Shared progress</span>
+      <span class="syncstat" id="syncStatus">Not set up</span>
+    </summary>
+    <div class="body">
+      <p class="prose" style="margin-top:0">Enter the same address and code on both
+        phones and your checklists, quiz misses and audio positions stay in step.
+        Leave it blank and everything still works, just on this device only.</p>
+      <div style="margin-bottom:12px">
+        <label class="f" for="syncUrl">Sync address</label>
+        <input type="text" id="syncUrl" placeholder="https://dmv-sync.<name>.workers.dev"
+               autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <div style="margin-bottom:12px">
+        <label class="f" for="syncCode">Sync code (both phones, at least 6 characters)</label>
+        <input type="text" id="syncCode" placeholder="something only you two know"
+               autocomplete="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="btnrow">
+        <button class="act" id="syncSave" type="button">Save &amp; sync now</button>
+        <button class="ghost" id="syncClear" type="button">Turn off</button>
+      </div>
+      <p class="muted" style="margin-top:12px">Anyone holding both the address and
+        the code can read and change this progress, so don't reuse a password.
+        Setup instructions are in the repository under <code>server/</code>.</p>
+    </div>
+  </details>
+
   <div class="card">
     <p class="eyebrow">Two clocks, two different deadlines</p>
     <h2>You have 10 days for the license and 20 for the vehicles</h2>
@@ -630,18 +673,45 @@ var BYID = {}; BANK.forEach(function(q){ BYID[q.id] = q; });
 
 /* ---------------- storage (best effort) ---------------- */
 var KEY = "cadmv.v1";
-var store = { who:"A", names:{A:"Driver A", B:"Driver B"}, resDate:"", lastChapter:"",
-              plan:{A:{},B:{}}, miss:{A:{},B:{}}, seen:{A:{},B:{}}, audio:{A:{},B:{}} };
+var DEFAULT_NAMES = {A:"Karla", B:"Dexter"};
+var store = { who:"A", names:{A:DEFAULT_NAMES.A, B:DEFAULT_NAMES.B}, resDate:"", lastChapter:"",
+              plan:{A:{},B:{}}, miss:{A:{},B:{}}, seen:{A:{},B:{}}, audio:{A:{},B:{}},
+              // per-device, never synced
+              syncUrl:"", syncCode:"",
+              // when each value last changed, for merging
+              stamps:{ plan:{A:{},B:{}}, miss:{A:{},B:{}}, seen:{A:{},B:{}}, audio:{A:{},B:{}},
+                       names:{A:0,B:0}, resDate:0, lastChapter:0 } };
 function load(){
   try{
     var raw = localStorage.getItem(KEY);
     if(raw){
       var o = JSON.parse(raw);
       if(o && typeof o === "object"){
-        ["who","resDate","lastChapter"].forEach(function(k){ if(o[k]) store[k]=o[k]; });
+        ["who","resDate","lastChapter","syncUrl","syncCode"].forEach(function(k){
+          if(o[k]) store[k]=o[k];
+        });
+        if(o.stamps && typeof o.stamps === "object"){
+          ["plan","miss","seen","audio"].forEach(function(sec){
+            if(o.stamps[sec]){
+              store.stamps[sec].A = o.stamps[sec].A || {};
+              store.stamps[sec].B = o.stamps[sec].B || {};
+            }
+          });
+          if(o.stamps.names) store.stamps.names = {A:o.stamps.names.A||0, B:o.stamps.names.B||0};
+          store.stamps.resDate = o.stamps.resDate || 0;
+          store.stamps.lastChapter = o.stamps.lastChapter || 0;
+        }
         ["names","plan","miss","seen","audio"].forEach(function(k){
           if(o[k] && typeof o[k]==="object"){
-            if(k==="names"){ if(o.names.A) store.names.A=o.names.A; if(o.names.B) store.names.B=o.names.B; }
+            if(k==="names"){
+              // Carry over a name the user typed, but replace a stale built-in
+              // default so an existing device picks up the new one.
+              var OLD = {A:"Driver A", B:"Driver B"};
+              ["A","B"].forEach(function(s){
+                var v = o.names[s];
+                if(v && v !== OLD[s]) store.names[s] = v;
+              });
+            }
             else { store[k].A = o[k].A || {}; store[k].B = o[k].B || {}; }
           }
         });
@@ -651,9 +721,205 @@ function load(){
 }
 function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
+  scheduleSync();
 }
 load();
 function who(){ return store.who; }
+
+/* ---------------- mergeable state ----------------
+   Two phones sync through a shared blob. Whole-blob last-write-wins would let
+   one phone's checklist tick erase the other's quiz misses, so every value
+   carries the time it last changed and merging is per key.
+
+   A stamp with no matching value is a tombstone: it is how "I deleted this"
+   survives a merge instead of being resurrected by the other side. */
+function nowMs(){ return Date.now(); }
+
+function touch(section, person, key){
+  var s = store.stamps;
+  if(person && key !== undefined){
+    if(!s[section]) s[section] = {A:{}, B:{}};
+    if(!s[section][person] || typeof s[section][person] !== "object") s[section][person] = {};
+    s[section][person][key] = nowMs();
+  } else if(person){
+    if(!s[section] || typeof s[section] !== "object") s[section] = {A:0, B:0};
+    s[section][person] = nowMs();
+  } else {
+    s[section] = nowMs();
+  }
+}
+
+function mergeMap(lv, ls, rv, rs){
+  var keys = {}, k;
+  [lv, rv, ls, rs].forEach(function(o){
+    if(o) for(k in o){ if(Object.prototype.hasOwnProperty.call(o,k)) keys[k] = 1; }
+  });
+  var outV = {}, outS = {};
+  Object.keys(keys).forEach(function(key){
+    var lt = (ls && ls[key]) || 0, rt = (rs && rs[key]) || 0;
+    var useRemote = rt > lt;
+    var src = useRemote ? rv : lv;
+    var t = useRemote ? rt : lt;
+    if(src && Object.prototype.hasOwnProperty.call(src, key)) outV[key] = src[key];
+    if(t) outS[key] = t;
+  });
+  return {v:outV, s:outS};
+}
+
+/* Fold a remote snapshot into the local one. Returns true if anything changed. */
+function mergeRemote(remote){
+  if(!remote || typeof remote !== "object") return false;
+  var rst = remote.stamps || {};
+  var changed = false;
+  var before = JSON.stringify([store.plan, store.miss, store.seen, store.audio,
+                               store.names, store.resDate, store.lastChapter]);
+
+  ["plan","miss","seen","audio"].forEach(function(sec){
+    ["A","B"].forEach(function(p){
+      var res = mergeMap(
+        (store[sec] && store[sec][p]) || {},
+        (store.stamps[sec] && store.stamps[sec][p]) || {},
+        (remote[sec] && remote[sec][p]) || {},
+        (rst[sec] && rst[sec][p]) || {});
+      store[sec][p] = res.v;
+      if(!store.stamps[sec]) store.stamps[sec] = {A:{}, B:{}};
+      store.stamps[sec][p] = res.s;
+    });
+  });
+
+  ["A","B"].forEach(function(p){
+    var lt = (store.stamps.names && store.stamps.names[p]) || 0;
+    var rt = (rst.names && rst.names[p]) || 0;
+    if(rt > lt && remote.names && remote.names[p]){
+      store.names[p] = remote.names[p];
+      if(!store.stamps.names) store.stamps.names = {A:0,B:0};
+      store.stamps.names[p] = rt;
+    }
+  });
+
+  ["resDate","lastChapter"].forEach(function(f){
+    var lt = store.stamps[f] || 0, rt = rst[f] || 0;
+    if(rt > lt && remote[f] !== undefined){
+      store[f] = remote[f];
+      store.stamps[f] = rt;
+    }
+  });
+
+  changed = JSON.stringify([store.plan, store.miss, store.seen, store.audio,
+                            store.names, store.resDate, store.lastChapter]) !== before;
+  return changed;
+}
+
+/* Only the shared parts travel. `who`, and the sync settings themselves, are
+   per-device: each phone picks who is using it. */
+function sharedPayload(){
+  return {
+    plan:store.plan, miss:store.miss, seen:store.seen, audio:store.audio,
+    names:store.names, resDate:store.resDate, lastChapter:store.lastChapter,
+    stamps:store.stamps
+  };
+}
+
+/* ---------------- sync engine ----------------
+   Local-first: everything works offline and writes to this device immediately.
+   Sync is a background reconciliation, never a gate on using the page. */
+var syncTimer = null, syncing = false, lastSync = 0, lastError = "";
+
+function syncConfigured(){
+  return !!(store.syncUrl && store.syncCode && store.syncCode.length >= 6);
+}
+function scheduleSync(){
+  if(!syncConfigured()) return;
+  if(syncTimer) clearTimeout(syncTimer);
+  syncTimer = setTimeout(function(){ syncNow(false); }, 2500);
+}
+
+function syncEndpoint(){
+  var base = store.syncUrl.trim();
+  return base + (base.indexOf("?") >= 0 ? "&" : "?") + "code=" +
+         encodeURIComponent(store.syncCode.trim());
+}
+
+function syncNow(manual){
+  if(!syncConfigured() || syncing) return Promise.resolve(false);
+  syncing = true; lastError = "";
+  paintSync("Syncing\u2026");
+  var url = syncEndpoint();
+
+  return fetch(url, {method:"GET", cache:"no-store"})
+    .then(function(r){
+      if(!r.ok) throw new Error("server returned " + r.status);
+      return r.json();
+    })
+    .then(function(doc){
+      if(doc && doc.error) throw new Error(doc.error);
+      var changed = doc && doc.state ? mergeRemote(doc.state) : false;
+      // Always push: either we changed something, or the remote is empty/behind.
+      return fetch(url, {
+        method: "POST",
+        // text/plain keeps this a "simple" CORS request - no preflight, which
+        // Apps Script cannot answer.
+        headers: {"Content-Type": "text/plain;charset=utf-8"},
+        body: JSON.stringify(sharedPayload())
+      }).then(function(r2){
+        if(!r2.ok) throw new Error("save failed, server returned " + r2.status);
+        return r2.json();
+      }).then(function(res){
+        if(res && res.error) throw new Error(res.error);
+        try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
+        lastSync = Date.now();
+        syncing = false;
+        if(changed) repaintAll();
+        paintSync();
+        return true;
+      });
+    })
+    .catch(function(err){
+      syncing = false;
+      lastError = err && err.message ? err.message : String(err);
+      paintSync();
+      return false;
+    });
+}
+
+function paintSync(override){
+  var box = document.getElementById("syncStatus");
+  if(!box) return;
+  box.className = "syncstat";
+  if(override){ box.textContent = override; return; }
+  if(!syncConfigured()){
+    box.textContent = "Not set up \u2014 this device only";
+    box.className = "syncstat off";
+    return;
+  }
+  if(lastError){
+    box.textContent = "Last sync failed: " + lastError;
+    box.className = "syncstat bad";
+    return;
+  }
+  if(!lastSync){ box.textContent = "Waiting for first sync\u2026"; return; }
+  var secs = Math.round((Date.now() - lastSync) / 1000);
+  var when = secs < 10 ? "just now"
+           : secs < 60 ? secs + "s ago"
+           : secs < 3600 ? Math.round(secs/60) + " min ago"
+           : Math.round(secs/3600) + "h ago";
+  box.textContent = "Synced " + when;
+  box.className = "syncstat ok";
+}
+
+/* Re-render every surface that reads shared state. Called after a merge pulls
+   in changes made on the other phone. */
+function repaintAll(){
+  try{
+    paintPeople();
+    renderPlan();
+    renderClocks();
+    var r = document.getElementById("resDate");
+    if(r && r.value !== store.resDate) r.value = store.resDate || "";
+    renderDrillStats();
+    if(window._audioRepaint) window._audioRepaint();
+  }catch(e){}
+}
 
 /* ---------------- helpers ---------------- */
 function el(tag, cls, txt){
@@ -724,17 +990,66 @@ pA.addEventListener("click", function(){ switchTo("A"); });
 pB.addEventListener("click", function(){ switchTo("B"); });
 document.getElementById("renameBtn").addEventListener("click", function(){
   var a = window.prompt("Name for the first driver", store.names.A);
-  if(a !== null && a.trim()) store.names.A = a.trim().slice(0,22);
+  if(a !== null && a.trim()){ store.names.A = a.trim().slice(0,22); touch("names","A"); }
   var b = window.prompt("Name for the second driver", store.names.B);
-  if(b !== null && b.trim()) store.names.B = b.trim().slice(0,22);
+  if(b !== null && b.trim()){ store.names.B = b.trim().slice(0,22); touch("names","B"); }
   save(); paintPeople(); renderPlan();
 });
 paintPeople();
 
+/* ---------------- sync wiring ---------------- */
+(function(){
+  var uIn = document.getElementById("syncUrl");
+  var cIn = document.getElementById("syncCode");
+  uIn.value = store.syncUrl || "";
+  cIn.value = store.syncCode || "";
+
+  document.getElementById("syncSave").addEventListener("click", function(){
+    var u = uIn.value.trim(), c = cIn.value.trim();
+    if(u && !/^https:\/\//i.test(u)){
+      paintSync("Address must start with https://");
+      return;
+    }
+    if(u && c.length < 6){
+      paintSync("Code must be at least 6 characters");
+      return;
+    }
+    store.syncUrl = u; store.syncCode = c;
+    lastError = ""; lastSync = 0;
+    save();
+    if(syncConfigured()) syncNow(true).then(function(ok){
+      if(ok) document.getElementById("syncCard").open = false;
+    });
+    else paintSync();
+  });
+
+  document.getElementById("syncClear").addEventListener("click", function(){
+    store.syncUrl = ""; store.syncCode = "";
+    uIn.value = ""; cIn.value = "";
+    lastError = ""; lastSync = 0;
+    save(); paintSync();
+  });
+
+  paintSync();
+  if(syncConfigured()){
+    syncNow(false);
+    // Coming back to the page is the moment the other phone's changes matter.
+    document.addEventListener("visibilitychange", function(){
+      if(!document.hidden) syncNow(false);
+    });
+    setInterval(function(){
+      if(!document.hidden) syncNow(false);
+    }, 60000);
+  }
+  setInterval(function(){ if(!syncing) paintSync(); }, 15000);
+})();
+
 /* ---------------- plan: deadline clocks ---------------- */
 var resInput = document.getElementById("resDate");
 resInput.value = store.resDate || "";
-resInput.addEventListener("change", function(){ store.resDate = resInput.value; save(); renderClocks(); });
+resInput.addEventListener("change", function(){
+  store.resDate = resInput.value; touch("resDate"); save(); renderClocks();
+});
 
 function renderClocks(){
   var box = document.getElementById("clocks");
@@ -781,6 +1096,7 @@ function renderPlan(){
     cb.setAttribute("aria-label", (isDone ? "Completed: " : "Mark complete: ") + s.title);
     cb.addEventListener("click", function(){
       if(state[s.id]) delete state[s.id]; else state[s.id] = 1;
+      touch("plan", who(), s.id);
       save(); renderPlan();
     });
     var st = el("div","st");
@@ -927,11 +1243,14 @@ function showDrill(){
       drillSession.right++; drillSession.streak++;
       if(drillSession.streak > drillSession.best) drillSession.best = drillSession.streak;
       if(store.miss[who()][item.id]) delete store.miss[who()][item.id];
+      touch("miss", who(), item.id);
     } else {
       drillSession.streak = 0;
       store.miss[who()][item.id] = 1;
+      touch("miss", who(), item.id);
     }
     store.seen[who()][item.id] = (store.seen[who()][item.id] || 0) + (correct ? 1 : 0);
+    touch("seen", who(), item.id);
     save();
 
     built.buttons.forEach(function(b){
@@ -1077,8 +1396,8 @@ function finishTest(){
   document.getElementById("testStage").classList.add("hide");
   var wrong = [];
   testQs.forEach(function(q, i){
-    if(testAnswers[i] !== 0){ wrong.push({q:q, given:testAnswers[i]}); store.miss[who()][q.id] = 1; }
-    else if(store.miss[who()][q.id]) delete store.miss[who()][q.id];
+    if(testAnswers[i] !== 0){ wrong.push({q:q, given:testAnswers[i]}); store.miss[who()][q.id] = 1; touch("miss", who(), q.id); }
+    else if(store.miss[who()][q.id]){ delete store.miss[who()][q.id]; touch("miss", who(), q.id); }
   });
   save();
   var missed = wrong.length;
@@ -1206,7 +1525,9 @@ function finishTest(){
     rec.t = Math.max(0, Math.round(seconds || 0));
     if(done) rec.done = 1;
     store.audio[who()][id] = rec;
+    touch("audio", who(), id);
     store.lastChapter = id;
+    touch("lastChapter");
     save();
   }
   function fmt(s){
