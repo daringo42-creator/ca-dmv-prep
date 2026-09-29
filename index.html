@@ -449,9 +449,8 @@ footer.foot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
       <span class="syncstat" id="syncStatus">Not set up</span>
     </summary>
     <div class="body">
-      <p class="prose" style="margin-top:0">Enter the same address and code on both
-        phones and your checklists, quiz misses and audio positions stay in step.
-        Leave it blank and everything still works, just on this device only.</p>
+      <p class="prose" style="margin-top:0" id="syncIntro"></p>
+      <p class="note hide" id="syncDefaultNote"></p>
       <div style="margin-bottom:12px">
         <label class="f" for="syncUrl">Sync address</label>
         <input type="text" id="syncUrl" placeholder="https://dmv-sync.<name>.workers.dev"
@@ -466,9 +465,10 @@ footer.foot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
         <button class="act" id="syncSave" type="button">Save &amp; sync now</button>
         <button class="ghost" id="syncClear" type="button">Turn off</button>
       </div>
-      <p class="muted" style="margin-top:12px">Anyone holding both the address and
-        the code can read and change this progress, so don't reuse a password.
-        Setup instructions are in the repository under <code>server/</code>.</p>
+      <p class="muted" style="margin-top:12px">Leave both boxes empty and press Save
+        to go back to the built-in default. Anyone holding both the address and the
+        code can read and change this progress, so don't reuse a password. Backend
+        setup is in the repository under <code>server/</code>.</p>
     </div>
   </details>
 
@@ -643,7 +643,7 @@ footer.foot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
     <div class="scroll"><table id="srcTable"></table></div>
   </div>
   <footer class="foot">
-    Built September 28, 2026 from the California Driver&rsquo;s Handbook, the California Vehicle Code and DMV
+    Built September 29, 2026 from the California Driver&rsquo;s Handbook, the California Vehicle Code and DMV
     published pages. A study aid, not legal advice. Progress is stored in this browser only &mdash; it is
     not shared between your two phones, and clearing site data resets it.
   </footer>
@@ -677,7 +677,7 @@ var DEFAULT_NAMES = {A:"Karla", B:"Dexter"};
 var store = { who:"A", names:{A:DEFAULT_NAMES.A, B:DEFAULT_NAMES.B}, resDate:"", lastChapter:"",
               plan:{A:{},B:{}}, miss:{A:{},B:{}}, seen:{A:{},B:{}}, audio:{A:{},B:{}},
               // per-device, never synced
-              syncUrl:"", syncCode:"",
+              syncUrl:"", syncCode:"", syncOff:false,
               // when each value last changed, for merging
               stamps:{ plan:{A:{},B:{}}, miss:{A:{},B:{}}, seen:{A:{},B:{}}, audio:{A:{},B:{}},
                        names:{A:0,B:0}, resDate:0, lastChapter:0 } };
@@ -690,6 +690,7 @@ function load(){
         ["who","resDate","lastChapter","syncUrl","syncCode"].forEach(function(k){
           if(o[k]) store[k]=o[k];
         });
+        if(o.syncOff === true) store.syncOff = true;
         if(o.stamps && typeof o.stamps === "object"){
           ["plan","miss","seen","audio"].forEach(function(sec){
             if(o.stamps[sec]){
@@ -825,8 +826,27 @@ function sharedPayload(){
    Sync is a background reconciliation, never a gate on using the page. */
 var syncTimer = null, syncing = false, lastSync = 0, lastError = "";
 
+/* Shipped defaults so a new phone syncs with no setup at all. They are public -
+   they live in this page's source - so they protect nothing. They exist for
+   convenience; anyone wanting the data actually private sets their own code
+   below, which overrides these. */
+/* No quotes around the tokens: build.py substitutes JSON, which brings its own. */
+var DEFAULT_SYNC = { url: "https://script.google.com/macros/s/AKfycbyeKLPB7etyK1zhZkcZ_hUPMaRJlKNCKMSQrZqf-uUSZimp-Cr_bEsaCIaPpjXHhWOz/exec", code: "g84sm-vft4y-7eiqo-q6cic" };
+
+function usingDefaults(){
+  return !store.syncOff && !store.syncUrl && !!DEFAULT_SYNC.url;
+}
+function effUrl(){
+  if(store.syncOff) return "";
+  return store.syncUrl || DEFAULT_SYNC.url || "";
+}
+function effCode(){
+  if(store.syncOff) return "";
+  return store.syncCode || (store.syncUrl ? "" : DEFAULT_SYNC.code) || "";
+}
 function syncConfigured(){
-  return !!(store.syncUrl && store.syncCode && store.syncCode.length >= 6);
+  var u = effUrl(), c = effCode();
+  return !!(u && c && c.length >= 6);
 }
 function scheduleSync(){
   if(!syncConfigured()) return;
@@ -835,9 +855,9 @@ function scheduleSync(){
 }
 
 function syncEndpoint(){
-  var base = store.syncUrl.trim();
+  var base = effUrl().trim();
   return base + (base.indexOf("?") >= 0 ? "&" : "?") + "code=" +
-         encodeURIComponent(store.syncCode.trim());
+         encodeURIComponent(effCode().trim());
 }
 
 function syncNow(manual){
@@ -888,7 +908,8 @@ function paintSync(override){
   box.className = "syncstat";
   if(override){ box.textContent = override; return; }
   if(!syncConfigured()){
-    box.textContent = "Not set up \u2014 this device only";
+    box.textContent = store.syncOff ? "Off \u2014 this device only"
+                                    : "Not set up \u2014 this device only";
     box.className = "syncstat off";
     return;
   }
@@ -903,7 +924,7 @@ function paintSync(override){
            : secs < 60 ? secs + "s ago"
            : secs < 3600 ? Math.round(secs/60) + " min ago"
            : Math.round(secs/3600) + "h ago";
-  box.textContent = "Synced " + when;
+  box.textContent = "Synced " + when + (usingDefaults() ? "" : " \u00B7 own code");
   box.className = "syncstat ok";
 }
 
@@ -1014,9 +1035,12 @@ paintPeople();
       paintSync("Code must be at least 6 characters");
       return;
     }
+    // Blank both boxes and Save means "go back to the shipped defaults".
     store.syncUrl = u; store.syncCode = c;
+    store.syncOff = false;
     lastError = ""; lastSync = 0;
     save();
+    if(window.paintDefaultNote) window.paintDefaultNote();
     if(syncConfigured()) syncNow(true).then(function(ok){
       if(ok) document.getElementById("syncCard").open = false;
     });
@@ -1024,11 +1048,48 @@ paintPeople();
   });
 
   document.getElementById("syncClear").addEventListener("click", function(){
-    store.syncUrl = ""; store.syncCode = "";
+    // Sticky: without this flag the shipped defaults would switch sync straight
+    // back on at the next load.
+    store.syncUrl = ""; store.syncCode = ""; store.syncOff = true;
     uIn.value = ""; cIn.value = "";
     lastError = ""; lastSync = 0;
-    save(); paintSync();
+    save(); paintSync(); paintDefaultNote();
   });
+
+  window.paintDefaultNote = function(){
+    var intro = document.getElementById("syncIntro");
+    var note = document.getElementById("syncDefaultNote");
+    var btn = document.getElementById("syncClear");
+    if(store.syncOff){
+      intro.textContent = "Sync is off. This device keeps its own progress and " +
+        "nothing leaves it. Press Save with both boxes empty to switch it back on.";
+      note.classList.add("hide");
+      btn.textContent = "Turn off";
+      btn.disabled = true;
+      return;
+    }
+    btn.disabled = false;
+    btn.textContent = "Turn off";
+    if(usingDefaults()){
+      intro.textContent = "This device is already syncing on the built-in default, " +
+        "so there is nothing to set up here or on any other phone. Your checklists, " +
+        "quiz misses and audio positions stay in step automatically.";
+      note.textContent = "";
+      note.appendChild(el("b", null, "Worth knowing: "));
+      note.appendChild(document.createTextNode(
+        "the built-in code ships inside this page, so it is public. Anyone who reads " +
+        "the page source could see this progress or overwrite it. For a study tracker " +
+        "that is usually fine, and the server keeps previous versions so a bad write " +
+        "can be undone. If you would rather it were private, set your own address and " +
+        "code above on both phones."));
+      note.classList.remove("hide");
+    } else {
+      intro.textContent = "This device is using your own sync address and code. " +
+        "Enter the same pair on the other phone to keep them in step.";
+      note.classList.add("hide");
+    }
+  };
+  window.paintDefaultNote();
 
   paintSync();
   if(syncConfigured()){

@@ -27,6 +27,7 @@
 var FOLDER_NAME = 'DMV prep sync';
 var PROP_FOLDER = 'dmv_sync_folder_id';
 var MAX_BODY = 2000000;   // ~2 MB; far above anything this dashboard produces
+var HISTORY_KEEP = 8;     // prior versions retained, so a bad write is recoverable
 
 /** The folder holding one JSON file per sync code. Created on first use. */
 function folder_() {
@@ -114,11 +115,26 @@ function doPost(e) {
     var f = fileFor_(fold, key);
 
     var rev = 1;
+    var history = [];
     if (f) {
-      try { rev = (JSON.parse(f.getBlob().getDataAsString()).rev || 0) + 1; } catch (err2) { rev = 1; }
+      try {
+        var prev = JSON.parse(f.getBlob().getDataAsString());
+        rev = (prev.rev || 0) + 1;
+        // Keep a few prior versions. The sync code shipped in the public page is
+        // not a secret, so a wrong or malicious write is possible; this makes one
+        // recoverable instead of permanent. Open the file in Drive and lift an
+        // older 'state' out of history to roll back.
+        history = Array.isArray(prev.history) ? prev.history : [];
+        if (prev.state) {
+          history.unshift({ rev: prev.rev || 0, updated: prev.updated || null, state: prev.state });
+        }
+        history = history.slice(0, HISTORY_KEEP);
+      } catch (err2) { rev = 1; history = []; }
     }
 
-    var payload = JSON.stringify({ state: state, rev: rev, updated: new Date().toISOString() });
+    var payload = JSON.stringify({
+      state: state, rev: rev, updated: new Date().toISOString(), history: history
+    });
     if (f) {
       f.setContent(payload);
     } else {
