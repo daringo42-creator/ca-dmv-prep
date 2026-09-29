@@ -1,66 +1,63 @@
 /**
  * Shared-progress backend for the CA DMV prep dashboard - Google Apps Script.
  *
- * Uses the Google account you already have. No new signup, no billing, and the
- * data lives in a spreadsheet in your own Drive that you can open and read.
+ * Uses the Google account you already have. No new signup, no billing. The data
+ * lives in a folder in your own Drive.
  *
  * Implements the same contract as the Cloudflare Worker:
  *   GET  <url>?code=<syncCode>            -> {"state": <object>|null, "rev": <n>}
  *   POST <url>?code=<syncCode>  body=JSON -> {"ok":true, "rev": <n>}
  *
  * SETUP
- *   1. script.google.com -> New project. Delete the sample, paste this file.
- *   2. Deploy -> New deployment -> type "Web app".
- *        Execute as:        Me
- *        Who has access:    Anyone
- *      Authorise when prompted (it is your own script touching your own Drive).
- *   3. Copy the /exec URL it gives you.
- *   4. Paste that URL into the dashboard's Sync card on both phones, with the
- *      same sync code.
+ *   1. script.google.com -> New project. Delete the sample, paste this whole file.
+ *   2. Deploy -> New deployment -> gear icon -> Web app.
+ *        Execute as:      Me
+ *        Who has access:  Anyone
+ *   3. Authorise when prompted. Google will warn that the app is unverified -
+ *      that is expected for your own private script. Advanced -> Go to <name>.
+ *   4. Copy the /exec URL. Paste it into the dashboard's Sync card on both
+ *      phones, with the same sync code.
  *
- * NOTE ON "Anyone": the URL is unguessable and the sync code is a second secret,
- * but anyone holding both can read and write that one spreadsheet row. Do not
- * reuse a password as the sync code.
- *
- * A spreadsheet named "DMV prep sync" is created in your Drive on first use.
+ * WHY DRIVE FILES AND NOT A SPREADSHEET: a Sheets cell holds at most 50,000
+ * characters. With 208 questions plus per-value timestamps the state can get
+ * within reach of that, and blowing the limit would fail at the worst moment.
+ * A Drive file has no practical ceiling.
  */
 
-var SHEET_NAME = 'DMV prep sync';
-var PROP_ID = 'dmv_sync_sheet_id';
-var MAX_BODY = 250000;
+var FOLDER_NAME = 'DMV prep sync';
+var PROP_FOLDER = 'dmv_sync_folder_id';
+var MAX_BODY = 2000000;   // ~2 MB; far above anything this dashboard produces
 
-function sheet_() {
+/** The folder holding one JSON file per sync code. Created on first use. */
+function folder_() {
   var props = PropertiesService.getScriptProperties();
-  var id = props.getProperty(PROP_ID);
-  var ss = null;
+  var id = props.getProperty(PROP_FOLDER);
   if (id) {
-    try { ss = SpreadsheetApp.openById(id); } catch (e) { ss = null; }
+    try {
+      var f = DriveApp.getFolderById(id);
+      if (!f.isTrashed()) return f;
+    } catch (e) { /* deleted or inaccessible - fall through and recreate */ }
   }
-  if (!ss) {
-    ss = SpreadsheetApp.create(SHEET_NAME);
-    props.setProperty(PROP_ID, ss.getId());
-    var s0 = ss.getSheets()[0];
-    s0.appendRow(['key', 'rev', 'updated', 'state']);
-    s0.setFrozenRows(1);
-  }
-  return ss.getSheets()[0];
+  var created = DriveApp.createFolder(FOLDER_NAME);
+  props.setProperty(PROP_FOLDER, created.getId());
+  return created;
 }
 
-/** Hash the sync code so the raw secret is never written to the sheet. */
+/** Hash the sync code so the raw secret is never written to Drive. */
 function keyFor_(code) {
   var bytes = Utilities.computeDigest(
     Utilities.DigestAlgorithm.SHA_256, 'cadmv:' + code, Utilities.Charset.UTF_8);
-  return bytes.map(function (b) {
-    return ((b < 0 ? b + 256 : b) + 0x100).toString(16).slice(1);
-  }).join('');
+  var out = '';
+  for (var i = 0; i < bytes.length; i++) {
+    var b = bytes[i] < 0 ? bytes[i] + 256 : bytes[i];
+    out += (b + 0x100).toString(16).slice(1);
+  }
+  return out;
 }
 
-function findRow_(sh, key) {
-  var keys = sh.getRange(2, 1, Math.max(0, sh.getLastRow() - 1) || 1, 1).getValues();
-  for (var i = 0; i < keys.length; i++) {
-    if (keys[i][0] === key) return i + 2;
-  }
-  return 0;
+function fileFor_(fold, key) {
+  var it = fold.getFilesByName(key + '.json');
+  return it.hasNext() ? it.next() : null;
 }
 
 function out_(obj) {
@@ -69,45 +66,87 @@ function out_(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+function readCode_(e) {
+  return ((e && e.parameter && e.parameter.code) || '').trim();
+}
+
 function doGet(e) {
-  var code = ((e && e.parameter && e.parameter.code) || '').trim();
+  var code = readCode_(e);
   if (code.length < 6) return out_({ error: 'sync code must be at least 6 characters' });
-  var sh = sheet_();
-  var row = findRow_(sh, keyFor_(code));
-  if (!row) return out_({ state: null, rev: 0 });
-  var vals = sh.getRange(row, 1, 1, 4).getValues()[0];
-  var state = null;
-  try { state = JSON.parse(vals[3]); } catch (err) { state = null; }
-  return out_({ state: state, rev: Number(vals[1]) || 0 });
+
+  var f = fileFor_(folder_(), keyFor_(code));
+  if (!f) return out_({ state: null, rev: 0 });
+
+  try {
+    var rec = JSON.parse(f.getBlob().getDataAsString());
+    return out_({ state: rec.state, rev: rec.rev || 0 });
+  } catch (err) {
+    return out_({ state: null, rev: 0 });
+  }
 }
 
 function doPost(e) {
-  var code = ((e && e.parameter && e.parameter.code) || '').trim();
+  var code = readCode_(e);
   if (code.length < 6) return out_({ error: 'sync code must be at least 6 characters' });
 
   var body = (e && e.postData && e.postData.contents) || '';
   if (body.length > MAX_BODY) return out_({ error: 'state too large' });
+
   var state;
-  try { state = JSON.parse(body); } catch (err) { return out_({ error: 'body is not valid JSON' }); }
+  try {
+    state = JSON.parse(body);
+  } catch (err) {
+    return out_({ error: 'body is not valid JSON' });
+  }
   if (!state || typeof state !== 'object') return out_({ error: 'state must be an object' });
 
-  // Two phones can post at the same moment; serialise the read-modify-write.
+  // Both phones can post at the same moment; serialise read-modify-write.
   var lock = LockService.getScriptLock();
-  try { lock.waitLock(20000); } catch (err) { return out_({ error: 'busy, retry' }); }
+  try {
+    lock.waitLock(20000);
+  } catch (err) {
+    return out_({ error: 'busy, please retry' });
+  }
 
   try {
-    var sh = sheet_();
+    var fold = folder_();
     var key = keyFor_(code);
-    var row = findRow_(sh, key);
+    var f = fileFor_(fold, key);
+
     var rev = 1;
-    if (row) {
-      rev = (Number(sh.getRange(row, 2).getValue()) || 0) + 1;
-      sh.getRange(row, 1, 1, 4).setValues([[key, rev, new Date(), body]]);
+    if (f) {
+      try { rev = (JSON.parse(f.getBlob().getDataAsString()).rev || 0) + 1; } catch (err2) { rev = 1; }
+    }
+
+    var payload = JSON.stringify({ state: state, rev: rev, updated: new Date().toISOString() });
+    if (f) {
+      f.setContent(payload);
     } else {
-      sh.appendRow([key, rev, new Date(), body]);
+      fold.createFile(key + '.json', payload, MimeType.PLAIN_TEXT);
     }
     return out_({ ok: true, rev: rev });
   } finally {
     lock.releaseLock();
   }
+}
+
+/**
+ * Optional: run this once from the editor (Run -> selfTest) to confirm the
+ * script works and to trigger the Drive authorisation prompt before you deploy.
+ * It writes a throwaway entry under the code "selftest-code" and reads it back.
+ */
+function selfTest() {
+  var code = 'selftest-code';
+  var fake = { parameter: { code: code }, postData: { contents: JSON.stringify({ hello: 'world' }) } };
+  var wrote = JSON.parse(doPost(fake).getContent());
+  var read = JSON.parse(doGet({ parameter: { code: code } }).getContent());
+  Logger.log('POST -> %s', JSON.stringify(wrote));
+  Logger.log('GET  -> %s', JSON.stringify(read));
+  if (!wrote.ok || !read.state || read.state.hello !== 'world') {
+    throw new Error('self test FAILED: ' + JSON.stringify({ wrote: wrote, read: read }));
+  }
+  // clean up so the throwaway file does not linger
+  var f = fileFor_(folder_(), keyFor_(code));
+  if (f) f.setTrashed(true);
+  Logger.log('self test PASSED - safe to deploy');
 }

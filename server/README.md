@@ -21,21 +21,34 @@ Then tap **Save & sync now**. That is it.
 
 ## Option A — Google Apps Script (no new account)
 
-Uses the Google account you already have. The data lands in a spreadsheet in
-your own Drive, which you can open and read.
+Uses the Google account you already have. The data lands in a folder in your own
+Drive, one small JSON file per sync code.
 
 1. Go to <https://script.google.com> → **New project**.
-2. Delete the sample code, paste in [`apps-script.gs`](apps-script.gs).
-3. **Deploy** → **New deployment** → type **Web app**.
+2. Delete the sample code, paste in all of [`apps-script.gs`](apps-script.gs).
+3. In the editor, pick **selfTest** from the function dropdown and press **Run**.
+   Google asks for authorisation — this is your own script touching your own
+   Drive. It warns the app is unverified, which is expected: **Advanced** →
+   **Go to ‹project name›**. The Execution log should end with
+   `self test PASSED - safe to deploy`.
+4. **Deploy** → **New deployment** → gear icon → **Web app**.
    - *Execute as*: **Me**
    - *Who has access*: **Anyone**
-4. Authorise when prompted — it is your own script touching your own Drive.
 5. Copy the **/exec** URL. That is your sync address.
 
-A spreadsheet called *DMV prep sync* appears in your Drive on first use.
+A folder called *DMV prep sync* appears in your Drive on first use.
 
-**Trade-off:** Apps Script is rate-limited and occasionally slow. For two people
-tapping a checklist that is irrelevant, but it is not built for heavy traffic.
+Running `selfTest` first is worth the ten seconds: it surfaces an authorisation
+or paste problem in the editor, where the error is readable, instead of as a
+silent failure on your phone.
+
+**Trade-off:** Apps Script is rate-limited and occasionally slow to cold-start.
+For two people tapping a checklist that does not matter, but it is not built for
+heavy traffic.
+
+**Why Drive files rather than a spreadsheet:** a Sheets cell holds at most 50,000
+characters, and with 208 questions plus per-value timestamps the state can get
+within reach of that. A Drive file has no practical ceiling.
 
 ## Option B — Cloudflare Worker (new free account, more robust)
 
