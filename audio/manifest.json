@@ -1,0 +1,254 @@
+[
+ {
+  "id": "ch00",
+  "title": "How to use this",
+  "group": "Getting oriented",
+  "blurb": "What is in here, how the chapters are ordered, and how to listen.",
+  "seconds": 91.7,
+  "bytes": 550604,
+  "file": "audio/ch00.mp3"
+ },
+ {
+  "id": "ch01",
+  "title": "The two clocks",
+  "group": "Getting oriented",
+  "blurb": "The 10-day licence deadline, the 20-day registration deadline, and what the test actually is.",
+  "seconds": 136.2,
+  "bytes": 817724,
+  "file": "audio/ch01.mp3"
+ },
+ {
+  "id": "ch02",
+  "title": "The paperwork run",
+  "group": "Getting oriented",
+  "blurb": "Every step of the application, in the order you should do them.",
+  "seconds": 148.1,
+  "bytes": 889292,
+  "file": "audio/ch02.mp3"
+ },
+ {
+  "id": "ch03",
+  "title": "What changed recently",
+  "group": "Getting oriented",
+  "blurb": "Eight rule changes from 2024 to 2026 that older study guides get wrong.",
+  "seconds": 277.4,
+  "bytes": 1665020,
+  "file": "audio/ch03.mp3"
+ },
+ {
+  "id": "ch04",
+  "title": "Coming from Texas",
+  "group": "Getting oriented",
+  "blurb": "Ten places California differs from the driving habits you already have.",
+  "seconds": 225.9,
+  "bytes": 1356284,
+  "file": "audio/ch04.mp3"
+ },
+ {
+  "id": "ch05",
+  "title": "The numbers drill",
+  "group": "Getting oriented",
+  "blurb": "Every figure worth memorising, grouped and read aloud.",
+  "seconds": 197.5,
+  "bytes": 1185644,
+  "file": "audio/ch05.mp3"
+ },
+ {
+  "id": "ch06",
+  "title": "Signs & Signals - learn",
+  "group": "Signs & Signals",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 134.4,
+  "bytes": 806780,
+  "file": "audio/ch06.mp3"
+ },
+ {
+  "id": "ch07",
+  "title": "Signs & Signals - quiz",
+  "group": "Signs & Signals",
+  "blurb": "25 spoken questions with a pause to answer.",
+  "seconds": 482.6,
+  "bytes": 2896220,
+  "file": "audio/ch07.mp3"
+ },
+ {
+  "id": "ch08",
+  "title": "Right-of-Way - learn",
+  "group": "Right-of-Way",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 136.8,
+  "bytes": 821180,
+  "file": "audio/ch08.mp3"
+ },
+ {
+  "id": "ch09",
+  "title": "Right-of-Way - quiz",
+  "group": "Right-of-Way",
+  "blurb": "22 spoken questions with a pause to answer.",
+  "seconds": 436.9,
+  "bytes": 2622044,
+  "file": "audio/ch09.mp3"
+ },
+ {
+  "id": "ch10",
+  "title": "Speed Limits - learn",
+  "group": "Speed Limits",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 124.7,
+  "bytes": 748604,
+  "file": "audio/ch10.mp3"
+ },
+ {
+  "id": "ch11",
+  "title": "Speed Limits - quiz",
+  "group": "Speed Limits",
+  "blurb": "18 spoken questions with a pause to answer.",
+  "seconds": 375.9,
+  "bytes": 2256140,
+  "file": "audio/ch11.mp3"
+ },
+ {
+  "id": "ch12",
+  "title": "Parking & Curbs - learn",
+  "group": "Parking & Curbs",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 146.0,
+  "bytes": 876764,
+  "file": "audio/ch12.mp3"
+ },
+ {
+  "id": "ch13",
+  "title": "Parking & Curbs - quiz",
+  "group": "Parking & Curbs",
+  "blurb": "22 spoken questions with a pause to answer.",
+  "seconds": 419.5,
+  "bytes": 2517788,
+  "file": "audio/ch13.mp3"
+ },
+ {
+  "id": "ch14",
+  "title": "Lanes, Turns & Signals - learn",
+  "group": "Lanes, Turns & Signals",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 144.4,
+  "bytes": 867116,
+  "file": "audio/ch14.mp3"
+ },
+ {
+  "id": "ch15",
+  "title": "Lanes, Turns & Signals - quiz",
+  "group": "Lanes, Turns & Signals",
+  "blurb": "22 spoken questions with a pause to answer.",
+  "seconds": 402.2,
+  "bytes": 2413964,
+  "file": "audio/ch15.mp3"
+ },
+ {
+  "id": "ch16",
+  "title": "Alcohol & Drugs - learn",
+  "group": "Alcohol & Drugs",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 133.7,
+  "bytes": 802748,
+  "file": "audio/ch16.mp3"
+ },
+ {
+  "id": "ch17",
+  "title": "Alcohol & Drugs - quiz",
+  "group": "Alcohol & Drugs",
+  "blurb": "18 spoken questions with a pause to answer.",
+  "seconds": 378.7,
+  "bytes": 2272700,
+  "file": "audio/ch17.mp3"
+ },
+ {
+  "id": "ch18",
+  "title": "Sharing the Road - learn",
+  "group": "Sharing the Road",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 139.7,
+  "bytes": 838748,
+  "file": "audio/ch18.mp3"
+ },
+ {
+  "id": "ch19",
+  "title": "Sharing the Road - quiz",
+  "group": "Sharing the Road",
+  "blurb": "18 spoken questions with a pause to answer.",
+  "seconds": 366.1,
+  "bytes": 2197532,
+  "file": "audio/ch19.mp3"
+ },
+ {
+  "id": "ch20",
+  "title": "Licensing & Insurance - learn",
+  "group": "Licensing & Insurance",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 150.2,
+  "bytes": 901820,
+  "file": "audio/ch20.mp3"
+ },
+ {
+  "id": "ch21",
+  "title": "Licensing & Insurance - quiz",
+  "group": "Licensing & Insurance",
+  "blurb": "22 spoken questions with a pause to answer.",
+  "seconds": 477.0,
+  "bytes": 2862812,
+  "file": "audio/ch21.mp3"
+ },
+ {
+  "id": "ch22",
+  "title": "Safe Driving - learn",
+  "group": "Safe Driving",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 157.4,
+  "bytes": 944876,
+  "file": "audio/ch22.mp3"
+ },
+ {
+  "id": "ch23",
+  "title": "Safe Driving - quiz",
+  "group": "Safe Driving",
+  "blurb": "20 spoken questions with a pause to answer.",
+  "seconds": 368.2,
+  "bytes": 2209916,
+  "file": "audio/ch23.mp3"
+ },
+ {
+  "id": "ch24",
+  "title": "Seat Belts & Kids - learn",
+  "group": "Seat Belts & Kids",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 132.3,
+  "bytes": 794252,
+  "file": "audio/ch24.mp3"
+ },
+ {
+  "id": "ch25",
+  "title": "Seat Belts & Kids - quiz",
+  "group": "Seat Belts & Kids",
+  "blurb": "11 spoken questions with a pause to answer.",
+  "seconds": 223.7,
+  "bytes": 1342604,
+  "file": "audio/ch25.mp3"
+ },
+ {
+  "id": "ch26",
+  "title": "Phones & Distraction - learn",
+  "group": "Phones & Distraction",
+  "blurb": "The rules explained, before you drill them.",
+  "seconds": 114.3,
+  "bytes": 686252,
+  "file": "audio/ch26.mp3"
+ },
+ {
+  "id": "ch27",
+  "title": "Phones & Distraction - quiz",
+  "group": "Phones & Distraction",
+  "blurb": "10 spoken questions with a pause to answer.",
+  "seconds": 213.2,
+  "bytes": 1279820,
+  "file": "audio/ch27.mp3"
+ }
+]
