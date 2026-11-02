@@ -835,6 +835,11 @@ function sharedPayload(){
    Local-first: everything works offline and writes to this device immediately.
    Sync is a background reconciliation, never a gate on using the page. */
 var syncTimer = null, syncing = false, lastSync = 0, lastError = "";
+/* Signature of the state we last successfully pushed. Without this the page
+   POSTs on every 60-second tick whether anything changed or not, which on two
+   phones is roughly 2,900 writes a day - enough to threaten the Apps Script
+   daily runtime quota for a dashboard nobody is even touching. */
+var lastPushedSig = null;
 
 /* Shipped defaults so a new phone syncs with no setup at all. They are public -
    they live in this page's source - so they protect nothing. They exist for
@@ -884,18 +889,33 @@ function syncNow(manual){
     .then(function(doc){
       if(doc && doc.error) throw new Error(doc.error);
       var changed = doc && doc.state ? mergeRemote(doc.state) : false;
-      // Always push: either we changed something, or the remote is empty/behind.
+
+      // Push only when there is something to push: the remote is empty, the
+      // merge altered our copy, or our state differs from what we last sent.
+      // A plain polling tick on unchanged data must not cost a write.
+      var payload = JSON.stringify(sharedPayload());
+      var remoteEmpty = !(doc && doc.state);
+      if(!remoteEmpty && payload === lastPushedSig){
+        try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
+        lastSync = Date.now();
+        syncing = false;
+        if(changed) repaintAll();
+        paintSync();
+        return true;
+      }
+
       return fetch(url, {
         method: "POST",
         // text/plain keeps this a "simple" CORS request - no preflight, which
         // Apps Script cannot answer.
         headers: {"Content-Type": "text/plain;charset=utf-8"},
-        body: JSON.stringify(sharedPayload())
+        body: payload
       }).then(function(r2){
         if(!r2.ok) throw new Error("save failed, server returned " + r2.status);
         return r2.json();
       }).then(function(res){
         if(res && res.error) throw new Error(res.error);
+        lastPushedSig = payload;
         try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){}
         lastSync = Date.now();
         syncing = false;
