@@ -1,0 +1,254 @@
+[
+ {
+  "id": "es00",
+  "title": "C\u00f3mo usar esto",
+  "group": "Para empezar",
+  "blurb": "Qu\u00e9 contiene, en qu\u00e9 orden est\u00e1n los cap\u00edtulos y c\u00f3mo escucharlos.",
+  "seconds": 106.2,
+  "bytes": 637724,
+  "file": "audio/es00.mp3"
+ },
+ {
+  "id": "es01",
+  "title": "Su punto de partida",
+  "group": "Para empezar",
+  "blurb": "Primera licencia: permiso de instrucci\u00f3n, examen te\u00f3rico y examen de manejo obligatorio.",
+  "seconds": 209.2,
+  "bytes": 1255916,
+  "file": "audio/es01.mp3"
+ },
+ {
+  "id": "es02",
+  "title": "El tr\u00e1mite paso a paso",
+  "group": "Para empezar",
+  "blurb": "Los nueve pasos de su solicitud, en el orden en que conviene hacerlos.",
+  "seconds": 256.1,
+  "bytes": 1537004,
+  "file": "audio/es02.mp3"
+ },
+ {
+  "id": "es03",
+  "title": "Cambios recientes",
+  "group": "Para empezar",
+  "blurb": "Las reglas que cambiaron entre 2024 y 2026 y que las gu\u00edas viejas ense\u00f1an mal.",
+  "seconds": 307.8,
+  "bytes": 1847468,
+  "file": "audio/es03.mp3"
+ },
+ {
+  "id": "es04",
+  "title": "Primera licencia o traspaso",
+  "group": "Para empezar",
+  "blurb": "En qu\u00e9 se diferencia su tr\u00e1mite del de quien llega con licencia de otro estado.",
+  "seconds": 164.7,
+  "bytes": 988940,
+  "file": "audio/es04.mp3"
+ },
+ {
+  "id": "es05",
+  "title": "Repaso de cifras",
+  "group": "Para empezar",
+  "blurb": "Todas las cifras que vale la pena memorizar, agrupadas y le\u00eddas en voz alta.",
+  "seconds": 243.9,
+  "bytes": 1463996,
+  "file": "audio/es05.mp3"
+ },
+ {
+  "id": "es06",
+  "title": "Se\u00f1ales y sem\u00e1foros - explicaci\u00f3n",
+  "group": "Se\u00f1ales y sem\u00e1foros",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 179.4,
+  "bytes": 1076780,
+  "file": "audio/es06.mp3"
+ },
+ {
+  "id": "es07",
+  "title": "Se\u00f1ales y sem\u00e1foros - examen",
+  "group": "Se\u00f1ales y sem\u00e1foros",
+  "blurb": "39 preguntas habladas con una pausa para contestar.",
+  "seconds": 971.7,
+  "bytes": 5830940,
+  "file": "audio/es07.mp3"
+ },
+ {
+  "id": "es08",
+  "title": "Derecho de paso - explicaci\u00f3n",
+  "group": "Derecho de paso",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 161.9,
+  "bytes": 971948,
+  "file": "audio/es08.mp3"
+ },
+ {
+  "id": "es09",
+  "title": "Derecho de paso - examen",
+  "group": "Derecho de paso",
+  "blurb": "22 preguntas habladas con una pausa para contestar.",
+  "seconds": 547.3,
+  "bytes": 3284300,
+  "file": "audio/es09.mp3"
+ },
+ {
+  "id": "es10",
+  "title": "L\u00edmites de velocidad - explicaci\u00f3n",
+  "group": "L\u00edmites de velocidad",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 133.8,
+  "bytes": 803036,
+  "file": "audio/es10.mp3"
+ },
+ {
+  "id": "es11",
+  "title": "L\u00edmites de velocidad - examen",
+  "group": "L\u00edmites de velocidad",
+  "blurb": "18 preguntas habladas con una pausa para contestar.",
+  "seconds": 458.1,
+  "bytes": 2749052,
+  "file": "audio/es11.mp3"
+ },
+ {
+  "id": "es12",
+  "title": "Estacionamiento - explicaci\u00f3n",
+  "group": "Estacionamiento",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 177.8,
+  "bytes": 1067132,
+  "file": "audio/es12.mp3"
+ },
+ {
+  "id": "es13",
+  "title": "Estacionamiento - examen",
+  "group": "Estacionamiento",
+  "blurb": "28 preguntas habladas con una pausa para contestar.",
+  "seconds": 666.4,
+  "bytes": 3998972,
+  "file": "audio/es13.mp3"
+ },
+ {
+  "id": "es14",
+  "title": "Carriles y vueltas - explicaci\u00f3n",
+  "group": "Carriles y vueltas",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 172.3,
+  "bytes": 1034156,
+  "file": "audio/es14.mp3"
+ },
+ {
+  "id": "es15",
+  "title": "Carriles y vueltas - examen",
+  "group": "Carriles y vueltas",
+  "blurb": "33 preguntas habladas con una pausa para contestar.",
+  "seconds": 800.1,
+  "bytes": 4801196,
+  "file": "audio/es15.mp3"
+ },
+ {
+  "id": "es16",
+  "title": "Alcohol y drogas - explicaci\u00f3n",
+  "group": "Alcohol y drogas",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 153.1,
+  "bytes": 919244,
+  "file": "audio/es16.mp3"
+ },
+ {
+  "id": "es17",
+  "title": "Alcohol y drogas - examen",
+  "group": "Alcohol y drogas",
+  "blurb": "18 preguntas habladas con una pausa para contestar.",
+  "seconds": 456.2,
+  "bytes": 2737964,
+  "file": "audio/es17.mp3"
+ },
+ {
+  "id": "es18",
+  "title": "Compartir el camino - explicaci\u00f3n",
+  "group": "Compartir el camino",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 166.4,
+  "bytes": 999164,
+  "file": "audio/es18.mp3"
+ },
+ {
+  "id": "es19",
+  "title": "Compartir el camino - examen",
+  "group": "Compartir el camino",
+  "blurb": "18 preguntas habladas con una pausa para contestar.",
+  "seconds": 455.6,
+  "bytes": 2734508,
+  "file": "audio/es19.mp3"
+ },
+ {
+  "id": "es20",
+  "title": "Licencias y seguro - explicaci\u00f3n",
+  "group": "Licencias y seguro",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 186.4,
+  "bytes": 1118684,
+  "file": "audio/es20.mp3"
+ },
+ {
+  "id": "es21",
+  "title": "Licencias y seguro - examen",
+  "group": "Licencias y seguro",
+  "blurb": "28 preguntas habladas con una pausa para contestar.",
+  "seconds": 723.4,
+  "bytes": 4341116,
+  "file": "audio/es21.mp3"
+ },
+ {
+  "id": "es22",
+  "title": "Manejo seguro - explicaci\u00f3n",
+  "group": "Manejo seguro",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 189.6,
+  "bytes": 1138124,
+  "file": "audio/es22.mp3"
+ },
+ {
+  "id": "es23",
+  "title": "Manejo seguro - examen",
+  "group": "Manejo seguro",
+  "blurb": "23 preguntas habladas con una pausa para contestar.",
+  "seconds": 557.8,
+  "bytes": 3347228,
+  "file": "audio/es23.mp3"
+ },
+ {
+  "id": "es24",
+  "title": "Cinturones y ni\u00f1os - explicaci\u00f3n",
+  "group": "Cinturones y ni\u00f1os",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 134.8,
+  "bytes": 809084,
+  "file": "audio/es24.mp3"
+ },
+ {
+  "id": "es25",
+  "title": "Cinturones y ni\u00f1os - examen",
+  "group": "Cinturones y ni\u00f1os",
+  "blurb": "11 preguntas habladas con una pausa para contestar.",
+  "seconds": 276.2,
+  "bytes": 1657532,
+  "file": "audio/es25.mp3"
+ },
+ {
+  "id": "es26",
+  "title": "Tel\u00e9fonos y distracci\u00f3n - explicaci\u00f3n",
+  "group": "Tel\u00e9fonos y distracci\u00f3n",
+  "blurb": "Las reglas explicadas, antes de practicarlas.",
+  "seconds": 121.7,
+  "bytes": 730748,
+  "file": "audio/es26.mp3"
+ },
+ {
+  "id": "es27",
+  "title": "Tel\u00e9fonos y distracci\u00f3n - examen",
+  "group": "Tel\u00e9fonos y distracci\u00f3n",
+  "blurb": "10 preguntas habladas con una pausa para contestar.",
+  "seconds": 259.0,
+  "bytes": 1554572,
+  "file": "audio/es27.mp3"
+ }
+]
